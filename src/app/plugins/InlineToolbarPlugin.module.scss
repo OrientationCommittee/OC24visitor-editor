@@ -1,0 +1,29 @@
+.inlineToolbar {
+  margin: 16px;
+  color: grey;
+}
+.inlineToolbar button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  font-size: 24px;
+  border-radius: 4px;
+  color: #cdcdcd;
+
+  &:hover {
+    background-color: #eeeeee;
+  }
+
+  &[aria-checked="true"] {
+    color: #111111;
+  }
+}
+.tag {
+  border-radius: 5px;
+  margin-right: 5px;
+}
+.tag:hover {
+  background-color: #EEEEEE;
+}
