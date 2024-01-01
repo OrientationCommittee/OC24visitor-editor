@@ -6,7 +6,6 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding-left: 8px;
   width: 40px;
   height: 40px;
   font-size: 24px;
@@ -20,7 +19,4 @@
   &[aria-checked="true"] {
     color: #111111;
   }
-}
-.tag:hover {
-  background-color: #EEEEEE;
 }

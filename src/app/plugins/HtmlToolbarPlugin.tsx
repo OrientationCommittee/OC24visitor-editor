@@ -5,7 +5,7 @@ import { $generateHtmlFromNodes } from '@lexical/html';
 import { $generateNodesFromDOM } from '@lexical/html';
 
 import { CiExport, CiImport } from "react-icons/ci";
-import styles from "./HtmlToolbarPlugin.module.scss";
+import styles from "./CommonToolbar.module.scss";
 
 // Export
 export const Export = (editor: any, exporterAsHTML?: Function) => {
@@ -54,7 +54,7 @@ export const HTMLToolbarPlugin: FC = () => {
   )
 
   return (
-    <div className={styles.htmlToolbar}>
+    <div className={styles.toolbar}>
       <button
         type="button"
         title="export"
@@ -63,7 +63,7 @@ export const HTMLToolbarPlugin: FC = () => {
           editor.dispatchCommand(EXPORT_COMMAND, exporter);
         }}
       >
-        <CiExport size={32}  />
+        <CiExport size={24} />
       </button>
       <button
         type="button"
@@ -73,7 +73,7 @@ export const HTMLToolbarPlugin: FC = () => {
           editor.dispatchCommand(IMPORT_COMMAND, defaultContentAsHTML);
         }}
       >
-        <CiImport size={32}  />
+        <CiImport size={24} />
       </button>
     </div>
   )

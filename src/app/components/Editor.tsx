@@ -35,8 +35,10 @@ export function Editor() {
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <ToolbarPlugin />
-      <InlineToolbarPlugin />
-      <HTMLToolbarPlugin />
+      <div className="flex justify-between">
+        <InlineToolbarPlugin />
+        <HTMLToolbarPlugin />
+      </div>
 
       <div className="relative p-4 my-0 mx-0 border border-slate-400 min-h-[480px]">
         <RichTextPlugin
