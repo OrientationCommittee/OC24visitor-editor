@@ -1,11 +1,26 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { $getRoot, $insertNodes, COMMAND_PRIORITY_EDITOR, LexicalCommand, createCommand } from "lexical";
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $generateHtmlFromNodes } from '@lexical/html';
 import { $generateNodesFromDOM } from '@lexical/html';
 
 import { CiExport, CiImport } from "react-icons/ci";
-import styles from "./CommonToolbar.module.scss";
+import styles from "./CommonToolbar.module.scss"
+
+const categories: { [key: string]: string } = {
+  newcomer: "新入生の方へ",
+  oriter: "オリターの方へ",
+  circle: "サークルの方へ",
+  committee: "当委員会について",
+};
+export type articleType = {
+  title: string; // 記事タイトル (pathにもなる)
+  category: (typeof categories)[number]; // 大枠のカテゴリ
+  subCategory: string; // 各ページ内で見出しでまとめる用
+  date: string; // 更新日
+  article: string; // html形式
+  shown: boolean; // 公開するかどうか
+}
 
 // Export
 export const Export = (editor: any, exporterAsHTML?: Function) => {
@@ -30,8 +45,8 @@ export const Import = (editor: any, defaultContentAsHTML?: string) => {
 };
 
 //HTMLToolbarPlugin
-export const HTMLToolbarPlugin: FC = () => {
-  const EXPORT_COMMAND: LexicalCommand<Function> = createCommand();
+export const HTMLToolbarPlugin: FC<{articleData: articleType | undefined}> = (props) => {
+  const EXPORT_COMMAND : LexicalCommand<Function> = createCommand();
   const IMPORT_COMMAND: LexicalCommand<string> = createCommand();
   const [ editor ] = useLexicalComposerContext();
 
@@ -52,6 +67,12 @@ export const HTMLToolbarPlugin: FC = () => {
     },
     COMMAND_PRIORITY_EDITOR
   )
+
+  useEffect(() => {
+    if (props?.articleData?.article) {
+      editor.dispatchCommand(IMPORT_COMMAND, props.articleData.article);
+    }
+  })
 
   return (
     <div className={styles.toolbar}>

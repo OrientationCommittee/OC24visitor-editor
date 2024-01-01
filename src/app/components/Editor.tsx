@@ -1,6 +1,6 @@
 "use client";
 
-import { ComponentProps } from "react";
+import { FC, ComponentProps } from "react";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
@@ -24,6 +24,8 @@ import { LinkPlugin } from "../plugins/LinkPlugin";
 import LexicalClickableLinkPlugin from "@lexical/react/LexicalClickableLinkPlugin";
 import { HTMLToolbarPlugin } from "../plugins/HtmlToolbarPlugin";
 
+import type { articleType } from "../plugins/HtmlToolbarPlugin";
+
 const initialConfig: ComponentProps<typeof LexicalComposer>["initialConfig"] = {
   namespace: "MyEditor",
   nodes: nodes,
@@ -31,13 +33,13 @@ const initialConfig: ComponentProps<typeof LexicalComposer>["initialConfig"] = {
   onError: (error) => console.error(error),
 };
 
-export function Editor() {
+export const Editor: FC<{initialData?: articleType}> = (props) => {
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <ToolbarPlugin />
       <div className="flex justify-between">
         <InlineToolbarPlugin />
-        <HTMLToolbarPlugin />
+        <HTMLToolbarPlugin articleData={props?.initialData}/>
       </div>
 
       <div className="relative p-4 my-0 mx-0 border border-slate-400 min-h-[480px]">
