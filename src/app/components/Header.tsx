@@ -3,7 +3,7 @@ import Link from "next/link";
 const header = () => {
   return (
     <header className="sticky top-0 w-full z-10 bg-white">
-      <div className="mx-0 flex justify-between items-center h-12 px-10 py-10">
+      <div className="mx-0 flex justify-between items-center h-24 px-10">
         <Link className="font-bold text-2xl" href="/">
           visitor-editor
         </Link>
