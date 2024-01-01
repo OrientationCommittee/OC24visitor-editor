@@ -9,7 +9,7 @@ import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext
 
 import { TbH1, TbH2, TbH3, TbH4 } from "node_modules/react-icons/tb";
 import { MdFormatQuote, MdFormatListBulleted, MdFormatListNumbered } from "node_modules/react-icons/md";
-import styles from "./ToolbarPlugin.module.scss";
+import styles from "./CommonToolbar.module.scss";
 
 const SupportedBlockType = {
   paragraph: "Paragraph",
@@ -135,7 +135,7 @@ export const ToolbarPlugin: FC = () => {
         aria-checked={blockType === "h1"}
         onClick={() => formatHeading("h1")}
       >
-        <TbH1 size={32}  />
+        <TbH1 size={24}  />
       </button>
       <button
         type="button"
@@ -145,7 +145,7 @@ export const ToolbarPlugin: FC = () => {
         aria-checked={blockType === "h2"}
         onClick={() => formatHeading("h2")}
       >
-        <TbH2 size={32}  />
+        <TbH2 size={24}  />
       </button>
       <button
         type="button"
@@ -155,7 +155,7 @@ export const ToolbarPlugin: FC = () => {
         aria-checked={blockType === "h3"}
         onClick={() => formatHeading("h3")}
       >
-        <TbH3 size={32}  />
+        <TbH3 size={24}  />
       </button>
       <button
         type="button"
@@ -165,7 +165,7 @@ export const ToolbarPlugin: FC = () => {
         aria-checked={blockType === "h4"}
         onClick={() => formatHeading("h4")}
       >
-        <TbH4 size={32}  />
+        <TbH4 size={24}  />
       </button>
       <button
         type="button"
@@ -175,7 +175,7 @@ export const ToolbarPlugin: FC = () => {
         aria-checked={blockType === "quote"}
         onClick={formatQuote}
       >
-        <MdFormatQuote size={32} />
+        <MdFormatQuote size={24} />
       </button>
       <button
       type="button"
@@ -185,7 +185,7 @@ export const ToolbarPlugin: FC = () => {
       aria-checked={blockType === "number"}
       onClick={formatNumberedList}
     >
-      <MdFormatListNumbered size={32} />
+      <MdFormatListNumbered size={24} />
     </button>
       <button
       type="button"
@@ -195,7 +195,7 @@ export const ToolbarPlugin: FC = () => {
       aria-checked={blockType === "bullet"}
       onClick={formatBulletList}
     >
-      <MdFormatListBulleted size={32} />
+      <MdFormatListBulleted size={24} />
     </button>
     </div>
   )
