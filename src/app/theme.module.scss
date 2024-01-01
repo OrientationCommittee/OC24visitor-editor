@@ -1,13 +1,17 @@
 .h1 {
-  font-size: 2.25rem;
+  font-size: 2.5rem;
   line-height: 2.5rem;
 }
 .h2 {
-  font-size: 1.5rem;
-  line-height: 2rem;
+  font-size: 2.2rem;
+  line-height: 2.25rem;
 }
 .h3 {
-  font-size: 1.25rem;
+  font-size: 2.0rem;
+  line-height: 2.0rem;
+}
+.h4 {
+  font-size: 1.7rem;
   line-height: 1.75rem;
 }
 
@@ -16,20 +20,51 @@
   padding: 10px;
 }
 
-.ul {
-  margin-left: 16px;
+.ul1 {
+  list-style-position: inside;
+  list-style-type: disc;
+}
+.ul2 {
+  list-style-position: inside;
+  list-style-type: circle;
+}
+.ul3 {
   list-style-position: inside;
   list-style-type: square;
 }
+.ul4 {
+  list-style-position: inside;
+  list-style-type: disc;
+}
+.ul5 {
+  list-style-position: inside;
+  list-style-type: disc;
+}
 
-.ol {
-  margin-left: 16px;
+
+.ol1 {
   list-style-position: inside;
   list-style-type: decimal;
 }
+.ol2 {
+  list-style-position: inside;
+  list-style-type: upper-alpha;
+}
+.ol3 {
+  list-style-position: inside;
+  list-style-type: lower-alpha;
+}
+.ol4 {
+  list-style-position: inside;
+  list-style-type: upper-roman;
+}
+.ol5 {
+  list-style-position: inside;
+  list-style-type: lower-roman;
+}
 
 .listitem {
-  margin: 4px 32px;
+  margin: 4px 16px;
 }
 
 .nestedListItem {
@@ -79,39 +114,35 @@
   }
 }
 
+.textBase {
+  margin: 10px;
+}
 .textBold {
   font-weight: bold;
 }
-
 .textCode {
   background-color: #e8eced;
   padding: 1px 0.25rem;
   font-family: Menlo, Consolas, Monaco, monospace;
   font-size: 94%;
 }
-
 .textItalic {
   font-style: italic;
 }
-
 .textStrikethrough {
   text-decoration: line-through;
 }
-
 .textSubscript {
   font-size: 0.8em;
   vertical-align: sub;
 }
-
 .textSuperscript {
   font-size: 0.8em;
   vertical-align: super;
 }
-
 .textUnderline {
   text-decoration: underline;
 }
-
 .textUnderlineStrikethrough {
   text-decoration: underline line-through;
 }

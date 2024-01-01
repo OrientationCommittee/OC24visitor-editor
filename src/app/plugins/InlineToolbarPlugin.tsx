@@ -69,7 +69,7 @@ export const InlineToolbarPlugin: FC = () => {
         onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, "italic")}>
         <MdFormatItalic className={styles.tag} size={32}/>
       </button>
-      <button
+      {/* <button
         type="button"
         aria-label="format code"
         role="checkbox"
@@ -92,7 +92,7 @@ export const InlineToolbarPlugin: FC = () => {
         aria-checked={isSuperscript}
         onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, "superscript")}>
         <MdSuperscript className={styles.tag} size={32}/>
-      </button>
+      </button> */}
     </div>
   )
 };

@@ -6,11 +6,26 @@ export const theme: EditorThemeClasses = {
     h1: styles.h1,
     h2: styles.h2,
     h3: styles.h3,
+    h4: styles.h4,
   },
   quote: styles.quote,
   list: {
     ul: styles.ul,
+    ulDepth: [
+      styles.ul1,
+      styles.ul2,
+      styles.ul3,
+      styles.ul4,
+      styles.ul5,
+    ],
     ol: styles.ol,
+    olDepth: [
+      styles.ol1,
+      styles.ol2,
+      styles.ol3,
+      styles.ol4,
+      styles.ol5,
+    ],
     listitem: styles.listitem,
     nested: {
       listitem: styles.nestedListItem,

@@ -3,12 +3,12 @@ import { useCallback } from "react";
 import { $getSelection, $isRangeSelection } from "lexical";
 import { $getNearestNodeOfType } from "@lexical/utils";
 import { $setBlocksType } from "@lexical/selection";
-import { INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND, INSERT_CHECK_LIST_COMMAND, $isListNode, ListNode } from "@lexical/list";
+import { INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND, $isListNode, ListNode } from "@lexical/list";
 import { HeadingTagType, $createHeadingNode, $isHeadingNode, $createQuoteNode } from "@lexical/rich-text";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 
-import { TbH1, TbH2, TbH3 } from "node_modules/react-icons/tb";
-import { MdFormatQuote, MdFormatListBulleted, MdFormatListNumbered, MdChecklist } from "node_modules/react-icons/md";
+import { TbH1, TbH2, TbH3, TbH4 } from "node_modules/react-icons/tb";
+import { MdFormatQuote, MdFormatListBulleted, MdFormatListNumbered } from "node_modules/react-icons/md";
 import styles from "./ToolbarPlugin.module.scss";
 
 const SupportedBlockType = {
@@ -17,12 +17,12 @@ const SupportedBlockType = {
   h2: "Heading 2",
   h3: "Heading 3",
   h4: "Heading 4",
-  h5: "Heading 5",
-  h6: "Heading 6",
+  h5: "Heading 5", //使わない
+  h6: "Heading 6", //使わない
   quote: "Quote",
   number: "Numbered List",
   bullet: "Bulleted List",
-  check: "Check List",
+  check: "Checked List", //使わない
 } as const;
 type BlockType = keyof typeof SupportedBlockType;
 
@@ -64,12 +64,6 @@ export const ToolbarPlugin: FC = () => {
   const formatNumberedList = useCallback(() => {
     if (blockType !== "number") {
       editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined);
-    }
-  }, [blockType, editor]);
-
-  const formatCheckList = useCallback(() => {
-    if (blockType !== "check") {
-      editor.dispatchCommand(INSERT_CHECK_LIST_COMMAND, undefined);
     }
   }, [blockType, editor]);
 
@@ -144,6 +138,16 @@ export const ToolbarPlugin: FC = () => {
       <button
         type="button"
         role="checkbox"
+        title={SupportedBlockType["h4"]}
+        aria-label={SupportedBlockType["h4"]}
+        aria-checked={blockType === "h4"}
+        onClick={() => formatHeading("h4")}
+      >
+        <TbH4 className={styles.tag} size={32} color={color("h4")} />
+      </button>
+      <button
+        type="button"
+        role="checkbox"
         title={SupportedBlockType["quote"]}
         aria-label={SupportedBlockType["quote"]}
         aria-checked={blockType === "quote"}
@@ -170,16 +174,6 @@ export const ToolbarPlugin: FC = () => {
       onClick={formatBulletList}
     >
       <MdFormatListBulleted className={styles.tag} size={32} color={color("bullet")}/>
-    </button>
-    <button
-      type="button"
-      role="checkbox"
-      title={SupportedBlockType["check"]}
-      aria-label={SupportedBlockType["check"]}
-      aria-checked={blockType === "check"}
-      onClick={formatCheckList}
-    >
-      <MdChecklist className={styles.tag}  size={32} color={color("check")}/>
     </button>
     </div>
   )
