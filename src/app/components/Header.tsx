@@ -4,7 +4,7 @@ const header = () => {
   return (
     <header className="sticky top-0 w-full z-10 bg-white">
       <div className="mx-0 flex justify-between items-center h-24 px-10">
-        <Link className="font-bold text-2xl" href="/">
+        <Link className="font-bold text-4xl" href="/">
           visitor-editor
         </Link>
         <Link
