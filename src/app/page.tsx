@@ -6,7 +6,7 @@ export default function Home() {
     committee: "当委員会について",
   };
   return (
-    <div className="px-10 py-8">
+    <div className="">
       <div className="flex items-center">
         <h1 className="font-bold text-2xl">記事一覧</h1>
         

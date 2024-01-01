@@ -36,7 +36,7 @@ export function Editor() {
       <ToolbarPlugin />
       <InlineToolbarPlugin />
 
-      <div className="relative p-4 my-0 mx-4 border border-slate-400 min-h-[480px]">
+      <div className="relative p-4 my-0 mx-0 border border-slate-400 min-h-[480px]">
         <RichTextPlugin
           contentEditable={<ContentEditable className="outline-none" />}
           placeholder={
