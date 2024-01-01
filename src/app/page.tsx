@@ -1,4 +1,4 @@
-import { Editor } from "./Editor";
+import { Editor } from "./components/Editor";
 import "ress";
 
 export default function Home() {
