@@ -20,6 +20,7 @@ import { ListMaxIndentLevelPlugin } from "../plugins/ListMaxIndentLevelPlugin";
 import { MarkdownPlugin } from "../plugins/MarkdownPlugin";
 import { LinkPlugin } from "../plugins/LinkPlugin";
 import LexicalClickableLinkPlugin from "@lexical/react/LexicalClickableLinkPlugin";
+import { HTMLToolbarPlugin } from "../plugins/HtmlToolbarPlugin";
 
 const initialConfig: ComponentProps<typeof LexicalComposer>["initialConfig"] = {
   namespace: "MyEditor",
@@ -33,6 +34,7 @@ export function Editor() {
     <LexicalComposer initialConfig={initialConfig}>
       <ToolbarPlugin />
       <InlineToolbarPlugin />
+      <HTMLToolbarPlugin />
 
       <div className="relative p-4 my-0 mx-4 border border-slate-400 min-h-[480px]">
         <RichTextPlugin
