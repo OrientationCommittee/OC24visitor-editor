@@ -43,7 +43,7 @@ export const InlineToolbarPlugin: FC = () => {
         role="checkbox"
         aria-checked={isBold}
         onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold")}>
-        <MdFormatBold className={styles.tag} size={32}/>
+        <MdFormatBold size={32}/>
       </button>
       <button
         type="button"
@@ -51,7 +51,7 @@ export const InlineToolbarPlugin: FC = () => {
         role="checkbox"
         aria-checked={isUnderline}
         onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, "underline")}>
-        <MdFormatUnderlined className={styles.tag} size={32}/>
+        <MdFormatUnderlined size={32}/>
       </button>
       <button
         type="button"
@@ -59,7 +59,7 @@ export const InlineToolbarPlugin: FC = () => {
         role="checkbox"
         aria-checked={isStrikethrough}
         onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, "strikethrough")}>
-        <MdFormatStrikethrough className={styles.tag} size={32}/>
+        <MdFormatStrikethrough size={32}/>
       </button>
       <button
         type="button"
@@ -67,7 +67,7 @@ export const InlineToolbarPlugin: FC = () => {
         role="checkbox"
         aria-checked={isItalic}
         onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, "italic")}>
-        <MdFormatItalic className={styles.tag} size={32}/>
+        <MdFormatItalic size={32}/>
       </button>
       {/* <button
         type="button"
@@ -75,7 +75,7 @@ export const InlineToolbarPlugin: FC = () => {
         role="checkbox"
         aria-checked={isCode}
         onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, "code")}>
-        <MdCode className={styles.tag} size={32}/>
+        <MdCode size={32}/>
       </button>
       <button
         type="button"
@@ -83,7 +83,7 @@ export const InlineToolbarPlugin: FC = () => {
         role="checkbox"
         aria-checked={isSubscript}
         onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, "subscript")}>
-        <MdSubscript className={styles.tag} size={32}/>
+        <MdSubscript size={32}/>
       </button>
       <button
         type="button"
@@ -91,7 +91,7 @@ export const InlineToolbarPlugin: FC = () => {
         role="checkbox"
         aria-checked={isSuperscript}
         onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, "superscript")}>
-        <MdSuperscript className={styles.tag} size={32}/>
+        <MdSuperscript size={32}/>
       </button> */}
     </div>
   )

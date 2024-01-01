@@ -2,6 +2,7 @@ import type { EditorThemeClasses } from "lexical";
 import styles from "./theme.module.scss";
 
 export const theme: EditorThemeClasses = {
+  paragraph: styles.paragraph,
   heading: {
     h1: styles.h1,
     h2: styles.h2,
