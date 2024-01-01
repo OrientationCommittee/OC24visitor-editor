@@ -1,5 +1,10 @@
+import { Editor } from "./Editor";
+import "ress";
+
 export default function Home() {
   return (
-    <div className="my-8">コンテンツ</div>
+    <div>
+      <Editor />
+    </div>
   )
 }

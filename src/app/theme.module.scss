@@ -1,0 +1,157 @@
+.paragraph {
+  font-size: 1rem;
+}
+.h1 {
+  font-size: 2rem;
+  line-height: 2.5rem;
+  width: max-content;
+  border-bottom: 1px solid black
+}
+.h2 {
+  font-size: 1.5rem;
+  line-height: 2.25rem;
+}
+.h3 {
+  font-size: 1.3rem;
+  line-height: 2.0rem;
+}
+.h4 {
+  font-size: 1.15rem;
+  line-height: 1.75rem;
+}
+
+.quote {
+  background-color: #edf2f9;
+  padding: 10px;
+}
+
+.link {
+  color: #5D99FF;
+}
+
+.ul1 {
+  list-style-position: inside;
+  list-style-type: disc;
+}
+.ul2 {
+  list-style-position: inside;
+  list-style-type: circle;
+}
+.ul3 {
+  list-style-position: inside;
+  list-style-type: square;
+}
+.ul4 {
+  list-style-position: inside;
+  list-style-type: disc;
+}
+.ul5 {
+  list-style-position: inside;
+  list-style-type: disc;
+}
+
+
+.ol1 {
+  list-style-position: inside;
+  list-style-type: decimal;
+}
+.ol2 {
+  list-style-position: inside;
+  list-style-type: upper-alpha;
+}
+.ol3 {
+  list-style-position: inside;
+  list-style-type: lower-alpha;
+}
+.ol4 {
+  list-style-position: inside;
+  list-style-type: upper-roman;
+}
+.ol5 {
+  list-style-position: inside;
+  list-style-type: lower-roman;
+}
+
+.listitem {
+  margin: 4px 16px;
+}
+
+.nestedListItem {
+  list-style: none;
+}
+
+.listitemChecked,
+.listitemUnchecked {
+  list-style: none;
+  position: relative;
+  margin-left: 8px;
+  padding-left: 24px;
+
+  &:focus-visible {
+    box-shadow: none;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #c5c5c5;
+    border-radius: 2px;
+  }
+}
+
+.listitemChecked {
+  &::before {
+    background-color: #3b72e9;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 8px;
+    left: 7px;
+    display: inline-block;
+    width: 10px;
+    height: 5px;
+    border-bottom: 2px solid white;
+    border-left: 2px solid white;
+    transform: rotate(-40deg);
+  }
+}
+
+.textBase {
+  margin: 10px;
+}
+.textBold {
+  font-weight: bold;
+}
+.textCode {
+  background-color: #e8eced;
+  padding: 1px 0.25rem;
+  font-family: Menlo, Consolas, Monaco, monospace;
+  font-size: 94%;
+}
+.textItalic {
+  font-style: italic;
+}
+.textStrikethrough {
+  text-decoration: line-through;
+}
+.textSubscript {
+  font-size: 0.8em;
+  vertical-align: sub;
+}
+.textSuperscript {
+  font-size: 0.8em;
+  vertical-align: super;
+}
+.textUnderline {
+  text-decoration: underline;
+}
+.textUnderlineStrikethrough {
+  text-decoration: underline line-through;
+}
