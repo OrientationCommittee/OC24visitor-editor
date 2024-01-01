@@ -11,6 +11,7 @@ export default function Home() {
     subCategory: string; // 各ページ内で見出しでまとめる用
     date: string; // 更新日
     article: string; // html形式
+    shown: boolean; // 公開するかどうか
   }[] = [
     {
       title: "テスト記事1",
@@ -18,6 +19,7 @@ export default function Home() {
       subCategory: "テスト1",
       date: "2021/04/01",
       article: "テスト記事です",
+      shown: true,
     },
     {
       title: "テスト記事3",
@@ -25,6 +27,7 @@ export default function Home() {
       subCategory: "テスト1",
       date: "2021/04/01",
       article: "テスト記事です",
+      shown: true,
     },
     {
       title: "テスト記事2",
@@ -32,6 +35,7 @@ export default function Home() {
       subCategory: "テスト2",
       date: "2021/04/01",
       article: "テスト記事です",
+      shown: true,
     },
   ];
   return (
@@ -84,7 +88,9 @@ export default function Home() {
                                 >
                                   {e.title}
                                 </a>
-                                <div className="text-sm mt-2">最終更新 {e.date}</div>
+                                <div className="text-sm mt-2">
+                                  最終更新 {e.date}
+                                </div>
                               </div>
                             );
                           })}
