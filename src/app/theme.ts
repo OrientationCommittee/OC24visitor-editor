@@ -9,6 +9,7 @@ export const theme: EditorThemeClasses = {
     h4: styles.h4,
   },
   quote: styles.quote,
+  link: styles.link,
   list: {
     ul: styles.ul,
     ulDepth: [

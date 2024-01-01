@@ -20,6 +20,8 @@ import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { InlineToolbarPlugin } from "./plugins/InlineToolbarPlugin";
 import { ListMaxIndentLevelPlugin } from "./plugins/ListMaxIndentLevelPlugin";
 import { MarkdownPlugin } from "./plugins/MarkdownPlugin";
+import { LinkPlugin } from "./plugins/LinkPlugin";
+import LexicalClickableLinkPlugin from "@lexical/react/LexicalClickableLinkPlugin";
 
 const initialConfig: ComponentProps<typeof LexicalComposer>["initialConfig"] = {
   namespace: "MyEditor",
@@ -49,6 +51,8 @@ export function Editor() {
       <TabIndentationPlugin />
       <ListMaxIndentLevelPlugin maxDepth={5} />
       <MarkdownPlugin />
+      <LinkPlugin />
+      <LexicalClickableLinkPlugin />
     </LexicalComposer>
   )
 }
