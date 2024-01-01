@@ -9,6 +9,8 @@ import { CheckListPlugin } from "@lexical/react/LexicalCheckListPlugin";
 import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
 
+import "ress";
+
 import { nodes } from "../nodes";
 import { theme } from "../theme";
 
