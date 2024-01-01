@@ -9,6 +9,8 @@ import { CheckListPlugin } from "@lexical/react/LexicalCheckListPlugin";
 import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
 
+import "ress";
+
 import { nodes } from "../nodes";
 import { theme } from "../theme";
 
@@ -36,7 +38,7 @@ export function Editor() {
       <InlineToolbarPlugin />
       <HTMLToolbarPlugin />
 
-      <div className="relative p-4 my-0 mx-4 border border-slate-400 min-h-[480px]">
+      <div className="relative p-4 my-0 mx-0 border border-slate-400 min-h-[480px]">
         <RichTextPlugin
           contentEditable={<ContentEditable className="outline-none" />}
           placeholder={
