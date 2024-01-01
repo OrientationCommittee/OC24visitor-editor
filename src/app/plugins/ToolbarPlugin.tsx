@@ -1,6 +1,6 @@
 import { FC, useState, useEffect } from "react";
 import { useCallback } from "react";
-import { $getSelection, $isRangeSelection } from "lexical";
+import { $getSelection, $isRangeSelection, $createParagraphNode } from "lexical";
 import { $getNearestNodeOfType } from "@lexical/utils";
 import { $setBlocksType } from "@lexical/selection";
 import { INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND, $isListNode, ListNode } from "@lexical/list";
@@ -39,6 +39,13 @@ export const ToolbarPlugin: FC = () => {
             $setBlocksType(selection, () => $createHeadingNode(type))
           }
         })
+      } else {
+        editor.update(() => {
+          const selection = $getSelection();
+          if ($isRangeSelection(selection)) {
+            $setBlocksType(selection, () => $createParagraphNode())
+          }
+        })
       }
     },
     [blockType, editor]
@@ -52,18 +59,39 @@ export const ToolbarPlugin: FC = () => {
           $setBlocksType(selection, () => $createQuoteNode());
         }
       });
-    }
-  }, [blockType, editor]);
-
-  const formatBulletList = useCallback(() => {
-    if (blockType !== "bullet") {
-      editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined);
+    } else {
+      editor.update(() => {
+        const selection = $getSelection();
+        if ($isRangeSelection(selection)) {
+          $setBlocksType(selection, () => $createParagraphNode())
+        }
+      })
     }
   }, [blockType, editor]);
 
   const formatNumberedList = useCallback(() => {
     if (blockType !== "number") {
       editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined);
+    } else {
+      editor.update(() => {
+        const selection = $getSelection();
+        if ($isRangeSelection(selection)) {
+          $setBlocksType(selection, () => $createParagraphNode())
+        }
+      })
+    }
+  }, [blockType, editor]);
+
+  const formatBulletList = useCallback(() => {
+    if (blockType !== "bullet") {
+      editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined);
+    } else {
+      editor.update(() => {
+        const selection = $getSelection();
+        if ($isRangeSelection(selection)) {
+          $setBlocksType(selection, () => $createParagraphNode())
+        }
+      })
     }
   }, [blockType, editor]);
 
@@ -97,12 +125,6 @@ export const ToolbarPlugin: FC = () => {
     });
   }, [editor]);
 
-  const color = (tag: string) => {
-    const active_color = "black";
-    const inactive_color = "#cdcdcd";
-    return blockType === tag ? active_color : inactive_color;
-  };
-
   return (
     <div className={styles.toolbar}>
       <button
@@ -113,7 +135,7 @@ export const ToolbarPlugin: FC = () => {
         aria-checked={blockType === "h1"}
         onClick={() => formatHeading("h1")}
       >
-        <TbH1 className={styles.tag} size={32} color={color("h1")} />
+        <TbH1 size={32}  />
       </button>
       <button
         type="button"
@@ -123,7 +145,7 @@ export const ToolbarPlugin: FC = () => {
         aria-checked={blockType === "h2"}
         onClick={() => formatHeading("h2")}
       >
-        <TbH2 className={styles.tag} size={32} color={color("h2")} />
+        <TbH2 size={32}  />
       </button>
       <button
         type="button"
@@ -133,7 +155,7 @@ export const ToolbarPlugin: FC = () => {
         aria-checked={blockType === "h3"}
         onClick={() => formatHeading("h3")}
       >
-        <TbH3 className={styles.tag} size={32} color={color("h3")} />
+        <TbH3 size={32}  />
       </button>
       <button
         type="button"
@@ -143,7 +165,7 @@ export const ToolbarPlugin: FC = () => {
         aria-checked={blockType === "h4"}
         onClick={() => formatHeading("h4")}
       >
-        <TbH4 className={styles.tag} size={32} color={color("h4")} />
+        <TbH4 size={32}  />
       </button>
       <button
         type="button"
@@ -153,7 +175,7 @@ export const ToolbarPlugin: FC = () => {
         aria-checked={blockType === "quote"}
         onClick={formatQuote}
       >
-        <MdFormatQuote className={styles.tag} size={32} color={color("quote")}/>
+        <MdFormatQuote size={32} />
       </button>
       <button
       type="button"
@@ -163,7 +185,7 @@ export const ToolbarPlugin: FC = () => {
       aria-checked={blockType === "number"}
       onClick={formatNumberedList}
     >
-      <MdFormatListNumbered className={styles.tag} size={32} color={color("number")}/>
+      <MdFormatListNumbered size={32} />
     </button>
       <button
       type="button"
@@ -173,7 +195,7 @@ export const ToolbarPlugin: FC = () => {
       aria-checked={blockType === "bullet"}
       onClick={formatBulletList}
     >
-      <MdFormatListBulleted className={styles.tag} size={32} color={color("bullet")}/>
+      <MdFormatListBulleted size={32} />
     </button>
     </div>
   )
