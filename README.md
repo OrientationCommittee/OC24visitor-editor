@@ -11,7 +11,7 @@ npm i
 ```shell
 npm run dev
 ```
-でポート番号 `localhost:11024/24/system` が動作します。
+でポート番号 `localhost:11024` が動作します。
 
 ## npm scripts
 ```shell
