@@ -1,4 +1,5 @@
-import '/src/app/styles/globals.scss';
+import '/src/app/styles/globals.css'
+import '/src/app/styles/globals.scss'
 import Header from './components/Header';
 import Footer from './components/Footer';
 
