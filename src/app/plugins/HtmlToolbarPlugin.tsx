@@ -7,7 +7,7 @@ import { $generateNodesFromDOM } from '@lexical/html';
 import { CiExport, CiImport } from "react-icons/ci";
 import styles from "./CommonToolbar.module.scss"
 
-import type { ArticleType } from "../types";
+import { categories, ArticleType } from "../types";
 
 // Export
 export const Export = (editor: any, exporterAsHTML?: Function) => {
@@ -32,7 +32,7 @@ export const Import = (editor: any, defaultContentAsHTML?: string) => {
 };
 
 //HTMLToolbarPlugin
-export const HTMLToolbarPlugin: FC<{articleData: ArticleType | undefined}> = (props) => {
+export const HTMLToolbarPlugin: FC<{articleState: ArticleType, initialData?: ArticleType}> = (props) => {
   const EXPORT_COMMAND : LexicalCommand<Function> = createCommand();
   const IMPORT_COMMAND: LexicalCommand<string> = createCommand();
   const [ editor ] = useLexicalComposerContext();
@@ -56,33 +56,52 @@ export const HTMLToolbarPlugin: FC<{articleData: ArticleType | undefined}> = (pr
   )
 
   useEffect(() => {
-    if (props?.articleData?.article) {
-      editor.dispatchCommand(IMPORT_COMMAND, props.articleData.article);
+    if (props?.initialData?.article) {
+      editor.dispatchCommand(IMPORT_COMMAND, props.initialData.article);
     }
-  })
+  },[props.initialData])
 
   return (
     <div className={styles.toolbar}>
-      <button
-        type="button"
-        title="export"
-        onClick={() => {
-          const exporter = console.log; //ここにexport用の関数を記述
-          editor.dispatchCommand(EXPORT_COMMAND, exporter);
-        }}
-      >
-        <CiExport size={24} />
-      </button>
-      <button
-        type="button"
-        title="import"
-        onClick={() => {
-          const defaultContentAsHTML = '<h1 class="theme_h1__OZrJ5" dir="ltr"><span style="white-space: pre-wrap;">にゃあ</span></h1><p class="theme_paragraph__0NEJb" dir="ltr"><span style="white-space: pre-wrap;">にゃんにゃん</span></p>'; //ここに挿入したいhtmlを記述
-          editor.dispatchCommand(IMPORT_COMMAND, defaultContentAsHTML);
-        }}
-      >
-        <CiImport size={24} />
-      </button>
+      <div className={styles.upper}>
+        <select className={styles.selectCategory}>
+          {...Object.keys(categories).map(key => { return <option key={key} value={key}>{categories[key]}</option>})}
+        </select>
+        <select className={styles.selectShownOrHidden}>
+          <option value="shown">公開</option>
+          <option value="hidden">非公開</option>
+        </select>
+        <div>
+        <button
+          type="button"
+          title="export"
+          onClick={() => {
+            const exporter = console.log; //ここにexport用の関数を記述
+            editor.dispatchCommand(EXPORT_COMMAND, exporter);
+          }}
+        >
+          <CiExport size={24} />
+        </button>
+        <button
+          type="button"
+          title="import"
+          onClick={() => {
+            const defaultContentAsHTML = '<h1 class="theme_h1__OZrJ5" dir="ltr"><span style="white-space: pre-wrap;">にゃあ</span></h1><p class="theme_paragraph__0NEJb" dir="ltr"><span style="white-space: pre-wrap;">にゃんにゃん</span></p>'; //ここに挿入したいhtmlを記述
+            editor.dispatchCommand(IMPORT_COMMAND, defaultContentAsHTML);
+          }}
+        >
+          <CiImport size={24} />
+        </button>
+        </div>
+      </div>
+      <div className={styles.lower}>
+        <div>
+          <input className={styles.sub} placeholder="サブカテゴリを入力"/>
+        </div>
+        <div>
+          <input className={styles.title} placeholder="タイトルを入力"/>
+        </div>
+      </div>
     </div>
   )
 }

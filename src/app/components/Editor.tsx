@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, ComponentProps } from "react";
+import { FC, ComponentProps, useState } from "react";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
@@ -34,12 +34,19 @@ const initialConfig: ComponentProps<typeof LexicalComposer>["initialConfig"] = {
 };
 
 export const Editor: FC<{initialData?: ArticleType}> = (props) => {
+  const [articleState, setArticleState] = useState<ArticleType>({title: "",category:"",subCategory:"",date:"",article:"",shown:false});
+  const updateArticleState = (key: keyof ArticleType, value: any) => setArticleState((article: Readonly<ArticleType>) => {
+    return {...article, [key]: value}
+  })
+
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <ToolbarPlugin />
-      <div className="flex justify-between">
-        <InlineToolbarPlugin />
-        <HTMLToolbarPlugin articleData={props?.initialData}/>
+      <div className="flex justify-between items-start">
+        <div>
+          <ToolbarPlugin />
+          <InlineToolbarPlugin />
+        </div>
+        <HTMLToolbarPlugin articleState={articleState} initialData={props.initialData}/>
       </div>
 
       <div className="relative p-4 my-0 mx-0 border border-slate-400 min-h-[480px]">
