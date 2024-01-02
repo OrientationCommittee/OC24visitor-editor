@@ -127,13 +127,13 @@ export const HTMLToolbarPlugin: FC<{
               type="checkbox"
               className="peer sr-only"
               onChange={(e) => {
-                articleState.shown = e.target.value === "on";
+                updateArticleState("shown", e.target.checked);
               }}
             />
             <span className="block w-[2em] cursor-pointer bg-gray-500 rounded-full p-[1px] after:block after:h-[1em] after:w-[1em] after:rounded-full after:bg-white after:transition peer-checked:bg-green-500 peer-checked:after:translate-x-[calc(100%-2px)]"></span>
           </label>
         </div>
-        
+
         {/* エクスポート・インポートボタン */}
         <div>
           <button
