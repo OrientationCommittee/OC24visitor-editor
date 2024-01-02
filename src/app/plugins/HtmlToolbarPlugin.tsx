@@ -92,7 +92,7 @@ export const HTMLToolbarPlugin: FC<{
 
         {/* カテゴリ欄 */}
         <div className="flex items-center justify-start mr-[20px]">
-          <div className="ml-0 pl-[8px] pr-[20px] text-gray-400 border-gray-300 border rounded-l-[6px]">
+          <div className="ml-0 pl-[8px] pr-[20px] text-gray border-gray-300 border rounded-l-[6px]">
             <select
               value={articleState.mainCategory}
               onChange={(e) => {
@@ -108,7 +108,7 @@ export const HTMLToolbarPlugin: FC<{
               })}
             </select>
           </div>
-          <div className="ml-[-1px] py-0 px-[8px] text-gray-400 border-gray-300 border rounded-r-[6px]">
+          <div className="ml-[-1px] py-0 px-[8px] text-gray border-gray-300 border rounded-r-[6px]">
             <input
               placeholder="サブカテゴリを入力"
               defaultValue={articleState.subCategory}
@@ -162,7 +162,7 @@ export const HTMLToolbarPlugin: FC<{
       </div>
       <div className="flex items-center flex-wrap">
         <div className="mr-4">タイトル</div>
-        <div className="py-0 px-[8px] text-gray-400 border-gray-300 border rounded-[6px] min-w-[300px]">
+        <div className="py-0 px-[8px] text-gray border-gray-300 border rounded-[6px] min-w-[300px]">
           <input
             placeholder="タイトルを入力"
             defaultValue={articleState.title}
