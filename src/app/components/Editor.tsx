@@ -34,7 +34,15 @@ const initialConfig: ComponentProps<typeof LexicalComposer>["initialConfig"] = {
 };
 
 export const Editor: FC<{initialData?: ArticleType}> = (props) => {
-  const [articleState, setArticleState] = useState<ArticleType>({title: "",mainCategory:"",subCategory:"",date:"",article:"",shown:false});
+  const initialData: ArticleType = {
+    title: props?.initialData?.title ?? "",
+    mainCategory: props?.initialData?.mainCategory ?? "fresher",
+    subCategory: props?.initialData?.subCategory ?? "",
+    date: "0000/00/00",
+    article: props?.initialData?.article ?? "",
+    shown: props?.initialData?.shown ?? false
+  }
+  const [articleState, setArticleState] = useState<ArticleType>(initialData);
   const updateArticleState = (key: keyof ArticleType, value: any) => setArticleState((article: Readonly<ArticleType>) => {
     return {...article, [key]: value}
   })
@@ -46,7 +54,7 @@ export const Editor: FC<{initialData?: ArticleType}> = (props) => {
           <ToolbarPlugin />
           <InlineToolbarPlugin />
         </div>
-        <HTMLToolbarPlugin articleState={articleState} initialData={props.initialData}/>
+        <HTMLToolbarPlugin articleState={articleState} updateArticleState={updateArticleState}/>
       </div>
 
       <div className="relative p-4 my-0 mx-0 border border-slate-400 min-h-[480px]">

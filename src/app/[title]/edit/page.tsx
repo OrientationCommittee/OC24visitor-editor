@@ -9,27 +9,27 @@ export default function Home() {
   const testData: ArticleType[] = [
     {
       title: "テスト記事1",
-      mainCategory: "新入生の方へ",
+      mainCategory: "fresher",
       subCategory: "テスト1",
       date: "2021/04/01",
-      article: "テスト記事です",
+      article: "テスト記事です#1",
       shown: true,
     },
     {
       title: "テスト記事3",
-      mainCategory: "新入生の方へ",
-      subCategory: "テスト1",
-      date: "2021/04/01",
-      article: "テスト記事です",
-      shown: true,
+      mainCategory: "circle",
+      subCategory: "テスト3",
+      date: "2021/04/03",
+      article: "テスト記事です#3",
+      shown: false,
     },
     {
       title: "テスト記事2",
-      mainCategory: "新入生の方へ",
+      mainCategory: "committee",
       subCategory: "テスト2",
-      date: "2021/04/01",
-      article: "テスト記事です",
-      shown: true,
+      date: "2021/04/02",
+      article: "テスト記事です#2",
+      shown: false,
     },
   ];
 
