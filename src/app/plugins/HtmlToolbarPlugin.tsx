@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useRef } from 'react';
 import { $getRoot, $insertNodes, COMMAND_PRIORITY_EDITOR, LexicalCommand, createCommand } from "lexical";
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $generateHtmlFromNodes } from '@lexical/html';
@@ -23,8 +23,8 @@ export const HTMLToolbarPlugin: FC<{articleState: ArticleType, updateArticleStat
   const updateArticleState = props.updateArticleState;
 
   //useStateでやると再レンダリングでバグる、もうわけわからん。
-  let subCategory = articleState.subCategory;
-  let title = articleState.title;
+  const subCategoryRef = useRef(articleState.subCategory);
+  const titleRef = useRef(articleState.title);
 
   //exportコマンド。ArticleTypeでエクスポートする。
   editor.registerCommand(
@@ -33,7 +33,7 @@ export const HTMLToolbarPlugin: FC<{articleState: ArticleType, updateArticleStat
       const Export = (editor: any, exporter?: Function) => {
         const contentAsHTML = $generateHtmlFromNodes(editor);
         const curDate = getCurrentDate();
-        const article = {...articleState, subCategory: subCategory,article: contentAsHTML, date: curDate, title: title};
+        const article = {...articleState, subCategory: subCategoryRef.current,article: contentAsHTML, date: curDate, title: titleRef.current};
         if (exporter) {
           exporter(article);
         }
@@ -109,13 +109,13 @@ export const HTMLToolbarPlugin: FC<{articleState: ArticleType, updateArticleStat
       </div>
       <div className={styles.lower}>
         <div>
-          <input className={styles.sub} placeholder="サブカテゴリを入力" defaultValue={articleState.subCategory} onChange={e => {
-            subCategory = e.target.value;
+          <input className={styles.sub} placeholder="サブカテゴリを入力" defaultValue={subCategoryRef.current} onChange={e => {
+            subCategoryRef.current = e.target.value;
           }}/>
         </div>
         <div>
-          <input className={styles.title} placeholder="タイトルを入力" defaultValue={articleState.title} onChange={e => {
-            title = e.target.value;
+          <input className={styles.title} placeholder="タイトルを入力" defaultValue={titleRef.current} onChange={e => {
+            titleRef.current = e.target.value;
           }}/>
         </div>
       </div>
