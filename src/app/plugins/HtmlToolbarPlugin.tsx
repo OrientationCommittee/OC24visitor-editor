@@ -159,7 +159,7 @@ export const HTMLToolbarPlugin: FC<{
           </button>
         </div>
       </div>
-      <div className="flex contents-start flex-wrap">
+      <div className="flex items-center flex-wrap">
         <div className="mr-4">タイトル</div>
         <div className="py-0 px-[8px] text-gray-400 border-gray-300 border rounded-[6px] min-w-[300px]">
           <input
