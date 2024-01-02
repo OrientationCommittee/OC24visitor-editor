@@ -1,4 +1,4 @@
-const categories: { [key: string]: string } = {
+export const categories: { [key: string]: string } = {
   newcomer: "新入生の方へ",
   oriter: "オリターの方へ",
   circle: "サークルの方へ",
