@@ -17,7 +17,7 @@ import getCurrentDate from "../utils/getCurrentDate";
 
 import { categories, ArticleType } from "../types";
 
-//HTMLToolbarPlugin
+// HTMLToolbarPlugin
 export const HTMLToolbarPlugin: FC<{
   articleState: ArticleType;
   updateArticleState: (key: keyof ArticleType, value: any) => void;
@@ -26,16 +26,13 @@ export const HTMLToolbarPlugin: FC<{
   const IMPORT_COMMAND: LexicalCommand<string> = createCommand();
   const [editor] = useLexicalComposerContext();
 
-  //articleStateで状態を常に追っているように書いているが、全然そんなことない。たぶんselectで入力させてる２つだけ。
-  //誰か書き直してくれませんか...？
   const articleState = props.articleState;
   const updateArticleState = props.updateArticleState;
 
-  //useStateでやると再レンダリングでバグる、もうわけわからん。
   const subCategoryRef = useRef(articleState.subCategory);
   const titleRef = useRef(articleState.title);
 
-  //exportコマンド。ArticleTypeでエクスポートする。
+  // exportコマンド。ArticleTypeでエクスポートする。
   editor.registerCommand(
     EXPORT_COMMAND,
     (exporter: Function) => {
@@ -60,7 +57,7 @@ export const HTMLToolbarPlugin: FC<{
     COMMAND_PRIORITY_EDITOR
   );
 
-  //importコマンド。ArticleTypeにおけるarticleのみ、インポートする。
+  // importコマンド。ArticleTypeにおけるarticleのみ、インポートする。
   editor.registerCommand(
     IMPORT_COMMAND,
     (defaultContentAsHTML: string) => {
@@ -121,7 +118,7 @@ export const HTMLToolbarPlugin: FC<{
             type="button"
             title="export"
             onClick={() => {
-              const exporter = console.log; //ここにexport用の関数（引数：ArticleTypeオブジェクト）を記述
+              const exporter = console.log; // ここにexport用の関数（引数：ArticleTypeオブジェクト）を記述
               editor.dispatchCommand(EXPORT_COMMAND, exporter);
             }}
           >
