@@ -1,6 +1,6 @@
 "use client";
 
-import { ComponentProps } from "react";
+import { FC, ComponentProps, useState } from "react";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
@@ -24,6 +24,8 @@ import { LinkPlugin } from "../plugins/LinkPlugin";
 import LexicalClickableLinkPlugin from "@lexical/react/LexicalClickableLinkPlugin";
 import { HTMLToolbarPlugin } from "../plugins/HtmlToolbarPlugin";
 
+import type { ArticleType } from "../types";
+
 const initialConfig: ComponentProps<typeof LexicalComposer>["initialConfig"] = {
   namespace: "MyEditor",
   nodes: nodes,
@@ -31,13 +33,28 @@ const initialConfig: ComponentProps<typeof LexicalComposer>["initialConfig"] = {
   onError: (error) => console.error(error),
 };
 
-export function Editor() {
+export const Editor: FC<{initialData?: ArticleType}> = (props) => {
+  const initialData: ArticleType = {
+    title: props?.initialData?.title ?? "",
+    mainCategory: props?.initialData?.mainCategory ?? "fresher",
+    subCategory: props?.initialData?.subCategory ?? "",
+    date: "0000/00/00",
+    article: props?.initialData?.article ?? "",
+    shown: props?.initialData?.shown ?? false
+  }
+  const [articleState, setArticleState] = useState<ArticleType>(initialData);
+  const updateArticleState = (key: keyof ArticleType, value: any) => setArticleState((article: Readonly<ArticleType>) => {
+    return {...article, [key]: value}
+  })
+
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <ToolbarPlugin />
-      <div className="flex justify-between">
-        <InlineToolbarPlugin />
-        <HTMLToolbarPlugin />
+      <div className="flex justify-between items-start">
+        <div>
+          <ToolbarPlugin />
+          <InlineToolbarPlugin />
+        </div>
+        <HTMLToolbarPlugin articleState={articleState} updateArticleState={updateArticleState}/>
       </div>
 
       <div className="relative p-4 my-0 mx-0 border border-slate-400 min-h-[480px]">

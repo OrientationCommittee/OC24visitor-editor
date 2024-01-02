@@ -1,6 +1,51 @@
 .toolbar {
   margin: 0 0 16px 0;
   color: grey;
+
+  > .upper {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+
+    &::before {
+      content: "#";
+      color: rgb(156, 156, 156);
+      transform: translateX(8px);
+    }
+
+    > .selectCategory {
+      margin-left: -10px;
+      margin-right: 20px;
+      padding-left: 20px;
+      color: rgb(156, 156, 156);
+      border-radius: 6px;
+      border: 1px solid rgb(208, 202, 202);
+    }
+    > .selectShownOrHidden {
+      padding: 0 10px;
+      text-align-last: center;
+      color: rgb(156, 156, 156);
+      border-radius: 6px;
+      border: 1px solid rgb(208, 202, 202);
+    }
+  }
+  > .lower div {
+    display: flex;
+    justify-content: left;
+    flex-wrap: wrap;
+
+    > input {
+      padding: 0 8px;
+      margin: 0 12px 8px 0;
+      color: rgb(156, 156, 156);
+      border-radius: 6px;
+      border: 1px solid rgb(208, 202, 202);
+    }
+
+    > .title {
+      min-width: 400px;
+    }
+  }
 }
 .toolbar button {
   display: inline-flex;
