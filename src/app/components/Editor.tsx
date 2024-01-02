@@ -34,7 +34,7 @@ const initialConfig: ComponentProps<typeof LexicalComposer>["initialConfig"] = {
 };
 
 export const Editor: FC<{initialData?: ArticleType}> = (props) => {
-  const [articleState, setArticleState] = useState<ArticleType>({title: "",category:"",subCategory:"",date:"",article:"",shown:false});
+  const [articleState, setArticleState] = useState<ArticleType>({title: "",mainCategory:"",subCategory:"",date:"",article:"",shown:false});
   const updateArticleState = (key: keyof ArticleType, value: any) => setArticleState((article: Readonly<ArticleType>) => {
     return {...article, [key]: value}
   })
