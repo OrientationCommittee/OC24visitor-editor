@@ -125,6 +125,7 @@ export const HTMLToolbarPlugin: FC<{
           <label>
             <input
               type="checkbox"
+              checked={articleState.shown}
               className="peer sr-only"
               onChange={(e) => {
                 updateArticleState("shown", e.target.checked);
