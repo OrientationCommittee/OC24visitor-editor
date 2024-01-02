@@ -87,32 +87,54 @@ export const HTMLToolbarPlugin: FC<{
 
   return (
     <div className={styles.toolbar}>
-      <div className={styles.upper}>
-        <select
-          className={styles.selectCategory}
-          value={articleState.mainCategory}
-          onChange={(e) => {
-            updateArticleState("mainCategory", e.target.value);
-          }}
-        >
-          {...Object.keys(categories).map((key) => {
-            return (
-              <option key={key} value={key}>
-                {categories[key]}
-              </option>
-            );
-          })}
-        </select>
-        <select
-          className={styles.selectShownOrHidden}
-          value={articleState.shown ? "shown" : "hidden"}
-          onChange={(e) => {
-            updateArticleState("shown", Boolean(e.target.value == "shown"));
-          }}
-        >
-          <option value="shown">公開</option>
-          <option value="hidden">非公開</option>
-        </select>
+      <div className="flex items-center justify-start">
+        <div className="mr-4">カテゴリ</div>
+
+        {/* カテゴリ欄 */}
+        <div className="flex items-center justify-start mr-[20px]">
+          <div className="ml-0 pl-[8px] pr-[20px] text-gray-400 border-gray-300 border rounded-l-[6px]">
+            <select
+              value={articleState.mainCategory}
+              onChange={(e) => {
+                updateArticleState("mainCategory", e.target.value);
+              }}
+            >
+              {...Object.keys(categories).map((key) => {
+                return (
+                  <option key={key} value={key}>
+                    # {categories[key]}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+          <div className="ml-[-1px] py-0 px-[8px] text-gray-400 border-gray-300 border rounded-r-[6px]">
+            <input
+              placeholder="サブカテゴリを入力"
+              defaultValue={articleState.subCategory}
+              onChange={(e) => {
+                subCategoryRef.current = e.target.value;
+              }}
+            />
+          </div>
+        </div>
+
+        {/* 公開トグルボタン */}
+        <div className="flex items-center justify-start mr-[20px]">
+          <div className="mr-[8px]">公開</div>
+          <label>
+            <input
+              type="checkbox"
+              className="peer sr-only"
+              onChange={(e) => {
+                articleState.shown = e.target.value === "on";
+              }}
+            />
+            <span className="block w-[2em] cursor-pointer bg-gray-500 rounded-full p-[1px] after:block after:h-[1em] after:w-[1em] after:rounded-full after:bg-white after:transition peer-checked:bg-green-500 peer-checked:after:translate-x-[calc(100%-2px)]"></span>
+          </label>
+        </div>
+        
+        {/* エクスポート・インポートボタン */}
         <div>
           <button
             type="button"
@@ -137,20 +159,10 @@ export const HTMLToolbarPlugin: FC<{
           </button>
         </div>
       </div>
-      <div className={styles.lower}>
-        <div>
+      <div className="flex contents-start flex-wrap">
+        <div className="mr-4">タイトル</div>
+        <div className="py-0 px-[8px] text-gray-400 border-gray-300 border rounded-[6px] min-w-[300px]">
           <input
-            className={styles.sub}
-            placeholder="サブカテゴリを入力"
-            defaultValue={articleState.subCategory}
-            onChange={(e) => {
-              subCategoryRef.current = e.target.value;
-            }}
-          />
-        </div>
-        <div>
-          <input
-            className={styles.title}
             placeholder="タイトルを入力"
             defaultValue={articleState.title}
             onChange={(e) => {
