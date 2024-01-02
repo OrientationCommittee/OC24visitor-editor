@@ -24,7 +24,7 @@ import { LinkPlugin } from "../plugins/LinkPlugin";
 import LexicalClickableLinkPlugin from "@lexical/react/LexicalClickableLinkPlugin";
 import { HTMLToolbarPlugin } from "../plugins/HtmlToolbarPlugin";
 
-import type { articleType } from "../plugins/HtmlToolbarPlugin";
+import type { ArticleType } from "../types";
 
 const initialConfig: ComponentProps<typeof LexicalComposer>["initialConfig"] = {
   namespace: "MyEditor",
@@ -33,7 +33,7 @@ const initialConfig: ComponentProps<typeof LexicalComposer>["initialConfig"] = {
   onError: (error) => console.error(error),
 };
 
-export const Editor: FC<{initialData?: articleType}> = (props) => {
+export const Editor: FC<{initialData?: ArticleType}> = (props) => {
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <ToolbarPlugin />

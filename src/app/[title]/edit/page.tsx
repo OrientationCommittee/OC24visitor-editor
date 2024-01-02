@@ -1,12 +1,12 @@
 "use client";
 
 import { Editor } from "src/app/components/Editor";
-import { articleType } from "../../plugins/HtmlToolbarPlugin";
+import { ArticleType } from "../../types";
 
 import { useParams } from "next/navigation";
 
 export default function Home() {
-  const testData: articleType[] = [
+  const testData: ArticleType[] = [
     {
       title: "テスト記事1",
       category: "新入生の方へ",
