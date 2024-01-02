@@ -8,13 +8,13 @@ const header = () => {
           visitor-editor
         </Link>
         <Link
-          className="ml-auto bg-blue-600 text-white text-sm px-7 py-3 font-semibold rounded"
+          className="ml-auto bg-blue-600 text-white text-sm px-7 py-3 w-28 font-semibold rounded text-center"
           href="https://ut-orientation.net/24/visitor/"
         >
           visitor
         </Link>
         <Link
-          className="ml-6 bg-green-600 text-white text-sm px-7 py-3 font-semibold rounded"
+          className="ml-6 bg-green-600 text-white text-sm px-7 py-3 w-28 font-semibold rounded text-center"
           href="/new"
         >
           新規記事
