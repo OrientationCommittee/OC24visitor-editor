@@ -1,10 +1,33 @@
+import { FC } from "react";
 import { categories, ArticleType } from "./types";
+
+const ArticleCard: FC<{articleData: ArticleType}> = (props) => {
+  const articleData = props.articleData;
+  return <div
+    className="w-[20vw] h-32 border rounded p-4 mb-1 flex flex-col justify-between"
+    key={articleData.title}
+    >
+      <a
+        className="font-semibold text-lg mb-1"
+        href={`/${articleData.title}/edit`}
+      >
+        {articleData.title}
+      </a>
+      <ul className="list-disc list-inside text-sm">
+        <li>#{articleData.mainCategory}</li>
+        <li>{articleData.subCategory}</li>
+      </ul>
+      <div className="text-sm mt-2">
+        <p className="text-right">最終更新 {articleData.date}</p>
+      </div>
+    </div>
+}
 
 export default function Home() {
   const testData: ArticleType[] = [
     {
       title: "テスト記事1",
-      category: "新入生の方へ",
+      mainCategory: "fresher",
       subCategory: "テスト1",
       date: "2021/04/01",
       article: "テスト記事です",
@@ -12,7 +35,7 @@ export default function Home() {
     },
     {
       title: "テスト記事3",
-      category: "新入生の方へ",
+      mainCategory: "oriter",
       subCategory: "テスト1",
       date: "2021/04/01",
       article: "テスト記事です",
@@ -20,7 +43,7 @@ export default function Home() {
     },
     {
       title: "テスト記事2",
-      category: "新入生の方へ",
+      mainCategory: "committee",
       subCategory: "テスト2",
       date: "2021/04/01",
       article: "テスト記事です",
@@ -35,7 +58,7 @@ export default function Home() {
           const subCategories: string[] = Array.from(
             new Map(
               testData
-                .filter((e) => e.category === categories[key])
+                .filter((e) => e.mainCategory === key)
                 .map((e) => [e.subCategory, e.subCategory])
             ),
             ([, v]) => v
@@ -62,27 +85,10 @@ export default function Home() {
                         {testData
                           .filter(
                             (e) =>
-                              e.category === categories[key] &&
+                              e.mainCategory === key &&
                               e.subCategory === subCategory
                           )
-                          .map((e) => {
-                            return (
-                              <div
-                                className="w-[20vw] border rounded p-4 mb-4"
-                                key={e.title}
-                              >
-                                <a
-                                  className="font-semibold text-lg mb-4"
-                                  href={`/${e.title}/edit`}
-                                >
-                                  {e.title}
-                                </a>
-                                <div className="text-sm mt-2">
-                                  最終更新 {e.date}
-                                </div>
-                              </div>
-                            );
-                          })}
+                          .map((e, index) => <ArticleCard key={index} articleData={e}/>)}
                       </div>
                     </div>
                   );
