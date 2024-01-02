@@ -11,16 +11,18 @@ import { $generateHtmlFromNodes } from "@lexical/html";
 import { $generateNodesFromDOM } from "@lexical/html";
 
 import { CiExport, CiImport } from "react-icons/ci";
+import { TbTrashX } from "react-icons/tb";
 import styles from "./CommonToolbar.module.scss";
 
 import getCurrentDate from "../utils/getCurrentDate";
 
-import { categories, ArticleType } from "../types";
+import { categories, mainCategory, ArticleType } from "../types";
 
 // HTMLToolbarPlugin
 export const HTMLToolbarPlugin: FC<{
   articleState: ArticleType;
   updateArticleState: (key: keyof ArticleType, value: any) => void;
+  edit: boolean;
 }> = (props) => {
   const EXPORT_COMMAND: LexicalCommand<Function> = createCommand();
   const IMPORT_COMMAND: LexicalCommand<string> = createCommand();
@@ -28,6 +30,7 @@ export const HTMLToolbarPlugin: FC<{
 
   const articleState = props.articleState;
   const updateArticleState = props.updateArticleState;
+  const edit = props.edit;
 
   const subCategoryRef = useRef(articleState.subCategory);
   const titleRef = useRef(articleState.title);
@@ -99,10 +102,10 @@ export const HTMLToolbarPlugin: FC<{
                 updateArticleState("mainCategory", e.target.value);
               }}
             >
-              {...Object.keys(categories).map((key) => {
+              {...Object.keys(categories).map((key, index) => {
                 return (
-                  <option key={key} value={key}>
-                    # {categories[key]}
+                  <option key={index} value={key}>
+                    # {categories[key as mainCategory]}
                   </option>
                 );
               })}
@@ -171,6 +174,19 @@ export const HTMLToolbarPlugin: FC<{
             }}
           />
         </div>
+        {edit ?
+        <>
+          <button
+            type="button"
+            onClick={() => {
+              const _id = articleState._id;
+              alert("delete!");
+              //ここでutil使って削除
+            }}
+          >
+            <TbTrashX size={24} />
+          </button>
+        </> : ""}
       </div>
     </div>
   );
