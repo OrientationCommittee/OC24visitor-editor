@@ -40,7 +40,7 @@ export default function Home() {
 
   return (
     <div>
-      <Editor initialData={article}/>
+      <Editor initialData={article} edit={true}/>
     </div>
   )
 }

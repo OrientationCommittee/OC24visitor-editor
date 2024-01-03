@@ -33,8 +33,9 @@ const initialConfig: ComponentProps<typeof LexicalComposer>["initialConfig"] = {
   onError: (error) => console.error(error),
 };
 
-export const Editor: FC<{initialData?: ArticleType}> = (props) => {
+export const Editor: FC<{initialData?: ArticleType, edit: boolean}> = (props) => {
   const initialData: ArticleType = {
+    _id: props?.initialData?._id ?? undefined,
     title: props?.initialData?.title ?? "",
     mainCategory: props?.initialData?.mainCategory ?? "fresher",
     subCategory: props?.initialData?.subCategory ?? "",
@@ -54,7 +55,7 @@ export const Editor: FC<{initialData?: ArticleType}> = (props) => {
           <ToolbarPlugin />
           <InlineToolbarPlugin />
         </div>
-        <HTMLToolbarPlugin articleState={articleState} updateArticleState={updateArticleState}/>
+        <HTMLToolbarPlugin articleState={articleState} updateArticleState={updateArticleState} edit={props?.edit}/>
       </div>
 
       <div className="relative p-4 my-0 mx-0 border border-slate-400 min-h-[480px]">
