@@ -16,7 +16,7 @@ import styles from "./CommonToolbar.module.scss";
 
 import getCurrentDate from "../utils/getCurrentDate";
 
-import { categories, mainCategory, ArticleType } from "../types";
+import { categories_jp, MainCategoryType, ArticleType } from "../types";
 
 // HTMLToolbarPlugin
 export const HTMLToolbarPlugin: FC<{
@@ -60,7 +60,7 @@ export const HTMLToolbarPlugin: FC<{
     COMMAND_PRIORITY_EDITOR
   );
 
-  // importコマンド。ArticleTypeにおけるarticleのみ、インポートする。
+  // importコマンド。ArticleTypeにおけるcontentのみ、インポートする。
   editor.registerCommand(
     IMPORT_COMMAND,
     (defaultContentAsHTML: string) => {
@@ -85,7 +85,7 @@ export const HTMLToolbarPlugin: FC<{
   );
 
   useEffect(() => {
-    editor.dispatchCommand(IMPORT_COMMAND, articleState.article);
+    editor.dispatchCommand(IMPORT_COMMAND, articleState.content);
   });
 
   return (
@@ -102,10 +102,10 @@ export const HTMLToolbarPlugin: FC<{
                 updateArticleState("mainCategory", e.target.value);
               }}
             >
-              {...Object.keys(categories).map((key, index) => {
+              {...(Object.keys(categories_jp) as MainCategoryType[]).map((mainCategory, index) => {
                 return (
-                  <option key={index} value={key}>
-                    # {categories[key as mainCategory]}
+                  <option key={index} value={mainCategory}>
+                    # {categories_jp[mainCategory]}
                   </option>
                 );
               })}

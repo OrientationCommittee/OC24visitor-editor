@@ -1,55 +1,31 @@
-import { categories, ArticleType } from "./types";
+import { categories_jp, ArticleType, MainCategoryType } from "./types";
+import { getArticles } from "./utils/article";
 
-export default function Home() {
-  const testData: ArticleType[] = [
-    {
-      title: "テスト記事1",
-      category: "新入生の方へ",
-      subCategory: "テスト1",
-      date: "2021/04/01",
-      article: "テスト記事です",
-      shown: true,
-    },
-    {
-      title: "テスト記事3",
-      category: "新入生の方へ",
-      subCategory: "テスト1",
-      date: "2021/04/01",
-      article: "テスト記事です",
-      shown: true,
-    },
-    {
-      title: "テスト記事2",
-      category: "新入生の方へ",
-      subCategory: "テスト2",
-      date: "2021/04/01",
-      article: "テスト記事です",
-      shown: true,
-    },
-  ];
+export default async function Home() {
+  const articlesData: ArticleType[] = await getArticles();
   return (
     <div>
       <h1 className="font-bold text-3xl mb-8">記事一覧</h1>
       <div className="flex justify-between">
-        {Object.keys(categories).map((key) => {
+        {(Object.keys(categories_jp) as MainCategoryType[]).map((mainCategory) => {
           const subCategories: string[] = Array.from(
             new Map(
-              testData
-                .filter((e) => e.category === categories[key])
+              articlesData
+                .filter((e) => e.mainCategory === mainCategory)
                 .map((e) => [e.subCategory, e.subCategory])
             ),
             ([, v]) => v
           );
 
           return (
-            <div className="mr-4 w-[24vw]" key={key}>
-              <a className="font-semibold text-2xl mb-6" href={`#${key}`}>
-                {categories[key]}
+            <div className="mr-4 w-[24vw]" key={mainCategory}>
+              <a className="font-semibold text-2xl mb-6" href={`#${mainCategory}`}>
+                {categories_jp[mainCategory]}
               </a>
               <div>
                 <div className="mb-[-24px]">
-                  <a className="text-base mb-10" href={`#${key}`}>
-                    #{key}
+                  <a className="text-base mb-10" href={`#${mainCategory}`}>
+                    #{mainCategory}
                   </a>
                 </div>
                 {subCategories.map((subCategory) => {
@@ -59,10 +35,10 @@ export default function Home() {
                         {subCategory}
                       </div>
                       <div>
-                        {testData
+                        {articlesData
                           .filter(
                             (e) =>
-                              e.category === categories[key] &&
+                              e.mainCategory === mainCategory &&
                               e.subCategory === subCategory
                           )
                           .map((e) => {
