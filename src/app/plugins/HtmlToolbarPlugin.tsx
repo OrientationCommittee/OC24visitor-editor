@@ -165,7 +165,9 @@ export const HTMLToolbarPlugin: FC<{
       </div>
       <div className="flex items-center flex-wrap">
         <div className="mr-4">タイトル</div>
-        <div className="py-0 px-[8px] text-gray border-gray-300 border rounded-[6px] min-w-[300px]">
+
+        {/* タイトル欄 */}
+        <div className="py-0 px-[8px] text-gray border-gray-300 border rounded-[6px] min-w-[300px] mr-[20px]">
           <input
             placeholder="タイトルを入力"
             defaultValue={articleState.title}
