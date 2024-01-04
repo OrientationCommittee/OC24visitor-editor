@@ -17,3 +17,8 @@ export type ArticleType = {
   shown: boolean; // 公開するかどうか
   _v?: number;
 }
+
+export type ArticleTitleType = {
+  _id: string;
+  title: string;
+}
