@@ -17,6 +17,29 @@ import styles from "./CommonToolbar.module.scss";
 import getCurrentDate from "../utils/getCurrentDate";
 
 import { categories_jp, MainCategoryType, ArticleType } from "../types";
+import { updateArticle, postArticle } from "../utils/article";
+
+const saveArticle = (article: ArticleType, options: { edit: boolean }) => {
+  const { edit } = options;
+
+  if (edit && article._id) {
+    try {
+      updateArticle(article._id, article);
+      console.log("updating");
+    } catch (e) {
+      console.log(e);
+    }
+  } else if (!edit) {
+    try {
+      postArticle(article);
+      console.log("posting");
+    } catch (e) {
+      console.log(e);
+    }
+  } else {
+    console.log("Error: save処理に失敗しました");
+  }
+};
 
 // HTMLToolbarPlugin
 export const HTMLToolbarPlugin: FC<{
@@ -38,23 +61,24 @@ export const HTMLToolbarPlugin: FC<{
   // exportコマンド。ArticleTypeでエクスポートする。
   editor.registerCommand(
     EXPORT_COMMAND,
-    (exporter: Function) => {
-      const Export = (editor: any, exporter?: Function) => {
-        const contentAsHTML = $generateHtmlFromNodes(editor);
-        const curDate = getCurrentDate();
-        const article = {
-          ...articleState,
-          subCategory: subCategoryRef.current,
-          article: contentAsHTML,
-          date: curDate,
-          title: titleRef.current,
-        };
-        if (exporter) {
-          exporter(article);
-        }
-        return null;
+    (
+      getArguments: () => { exporter: (article: ArticleType, options: any) => void; options: any }
+    ) => {
+      console.log("EXPORT_COMMAND入った");
+      const { exporter, options } = getArguments();
+
+      const contentAsHTML = $generateHtmlFromNodes(editor);
+      const curDate = getCurrentDate();
+      const article: ArticleType = {
+        ...articleState,
+        subCategory: subCategoryRef.current,
+        content: contentAsHTML,
+        date: curDate,
+        title: titleRef.current,
       };
-      Export(editor, exporter);
+      if (exporter) {
+        exporter(article, options);
+      }
       return true;
     },
     COMMAND_PRIORITY_EDITOR
@@ -141,8 +165,9 @@ export const HTMLToolbarPlugin: FC<{
             type="button"
             title="export"
             onClick={() => {
-              const exporter = console.log; // ここにexport用の関数（引数：ArticleTypeオブジェクト）を記述
-              editor.dispatchCommand(EXPORT_COMMAND, exporter);
+              editor.dispatchCommand(EXPORT_COMMAND, () => {
+                return { exporter: saveArticle, options: { edit: edit } };
+              });
             }}
           >
             <CiExport size={24} />

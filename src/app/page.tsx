@@ -1,39 +1,23 @@
-import Link from "next/link";
 import { FC } from "react";
 
 import { categories_jp, ArticleType, MainCategoryType } from "./types";
+import { getArticles } from "./utils/article";
 
 const ArticleCard: FC<{ article: ArticleType }> = (props) => {
   const article: ArticleType = props.article;
   return (
     <div className="w-[20vw] border rounded p-4 mb-4" key={article.title}>
-      <Link
-        className="font-semibold text-lg mb-4"
-        href={{ pathname: `/${article.title}/edit`, query: { id: article._id } }}
-        as={`/${article.title}/edit`}
-      >
+      <a className="font-semibold text-lg mb-4" href={`/${article.title}/edit`}>
         {article.title}
-      </Link>
+      </a>
       <div className="text-sm mt-2">最終更新 {article.date}</div>
     </div>
   );
 };
 
 export default async function Home() {
-  // const articlesData: ArticleType[] = await getArticles();
-  // local
-  const articlesData: ArticleType[] = [
-    {
-      _id: "10001",
-      title: "テスト",
-      date: "2020/12/07",
-      mainCategory: "oriter",
-      subCategory: "サブカテゴリだよ",
-      content: "<p>にゃあ</p>",
-      shown: false,
-      _v: 1,
-    },
-  ];
+  const articlesData: ArticleType[] = await getArticles();
+  console.log(articlesData); //ここに新規で送信した記事が出てこない
   return (
     <div>
       <h1 className="font-bold text-3xl mb-8">記事一覧</h1>
