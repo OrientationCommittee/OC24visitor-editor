@@ -29,7 +29,7 @@ export async function postArticle(article: ArticleType) {
 }
 
 //APIの記事を更新する関数.引数には_idと_vはいらない.
-export async function putArticle(id:string, article: ArticleType) {
+export async function putArticle(id: string, article: ArticleType) {
   const url = `${process.env.NEXT_PUBLIC_API_URL}/${id}`;
   const response = await fetch(url, {
     method: 'PUT',
