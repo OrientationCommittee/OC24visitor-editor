@@ -1,31 +1,22 @@
-export type mainCategory = "fresher" | "oriter" | "circle" | "committee"
-export type Article = {
-  _id?: string;
-  title: string;
-  date: string;
-  mainCategory: mainCategory;
-  subCategory: string;
-  content: string;
-  _v?: number;
-};
+import {MainCategoryType, ArticleType} from "../types";
 
 //通信系
 //APIから記事の全てを取得する関数.
-export async function getArticles(): Promise<Article[]> {
+export async function getArticles(): Promise<ArticleType[]> {
   const url = process.env.NEXT_PUBLIC_API_URL;
   const response = await fetch(url as string);
   return await response.json()
 }
 
 //APIから記事の一部を取得する関数.idは全記事取得の関数で得た_idを指定する.
-export async function getArticle(id: string): Promise<Article> {
+export async function getArticle(id: string): Promise<ArticleType> {
   const url = `${process.env.NEXT_PUBLIC_API_URL}/${id}`;
   const response = await fetch(url);
   return await response.json()
 }
 
 //APIに記事を追加する関数.引数には_idと_vはいらない.
-export async function postArticle(article: Article) {
+export async function postArticle(article: ArticleType) {
   const url = process.env.NEXT_PUBLIC_API_URL;
   const response = await fetch(url as string, {
     method: 'POST',
@@ -38,7 +29,7 @@ export async function postArticle(article: Article) {
 }
 
 //APIの記事を更新する関数.引数には_idと_vはいらない.
-export async function putArticle(id:string,article: Article) {
+export async function putArticle(id: string, article: ArticleType) {
   const url = `${process.env.NEXT_PUBLIC_API_URL}/${id}`;
   const response = await fetch(url, {
     method: 'PUT',
@@ -61,8 +52,8 @@ export async function deleteArticle(id: string) {
 
 //便利系.引数には上記関数で得た記事を入れる.
 //記事のmainCategory別subCategory一覧を取得する関数.
-export function getSubCategories(articles: Article[]): Record<string,string[]> {
-  const subCategories: Record<string,string[]> = {
+export function getSubCategories(articles: ArticleType[]): Record<string,string[]> {
+  const subCategories: Record<MainCategoryType,string[]> = {
     fresher: [],
     oriter: [],
     circle: [],

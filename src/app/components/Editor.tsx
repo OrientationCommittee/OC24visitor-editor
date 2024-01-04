@@ -40,7 +40,7 @@ export const Editor: FC<{initialData?: ArticleType, edit: boolean}> = (props) =>
     mainCategory: props?.initialData?.mainCategory ?? "fresher",
     subCategory: props?.initialData?.subCategory ?? "",
     date: "0000/00/00",
-    article: props?.initialData?.article ?? "",
+    content: props?.initialData?.content ?? "",
     shown: props?.initialData?.shown ?? false
   }
   const [articleState, setArticleState] = useState<ArticleType>(initialData);
