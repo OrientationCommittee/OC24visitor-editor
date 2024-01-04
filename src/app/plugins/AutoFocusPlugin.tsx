@@ -5,6 +5,6 @@ export const AutoFocusPlugin: FC = () => {
   const [editor] = useLexicalComposerContext();
   useEffect(() => {
     editor.focus();
-  }, [editor])
-  return null
-}
+  }, [editor]);
+  return null;
+};

@@ -1,7 +1,7 @@
-import type {RangeSelection} from 'lexical';
+import type { RangeSelection } from "lexical";
 
-import {$getListDepth, $isListItemNode, $isListNode} from '@lexical/list';
-import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
+import { $getListDepth, $isListItemNode, $isListNode } from "@lexical/list";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
   $getSelection,
   $isElementNode,
@@ -9,16 +9,14 @@ import {
   COMMAND_PRIORITY_CRITICAL,
   ElementNode,
   INDENT_CONTENT_COMMAND,
-} from 'lexical';
-import {FC, useEffect} from 'react';
+} from "lexical";
+import { FC, useEffect } from "react";
 
 type Props = Readonly<{
   maxDepth: number | null | undefined;
 }>;
 
-function getElementNodesInSelection(
-  selection: RangeSelection,
-): Set<ElementNode> {
+function getElementNodesInSelection(selection: RangeSelection): Set<ElementNode> {
   const nodesInSelection = selection.getNodes();
 
   if (nodesInSelection.length === 0) {
@@ -28,9 +26,7 @@ function getElementNodesInSelection(
     ]);
   }
 
-  return new Set(
-    nodesInSelection.map((n) => ($isElementNode(n) ? n : n.getParentOrThrow())),
-  );
+  return new Set(nodesInSelection.map((n) => ($isElementNode(n) ? n : n.getParentOrThrow())));
 }
 
 function isIndentPermitted(maxDepth: number): boolean {
@@ -40,8 +36,7 @@ function isIndentPermitted(maxDepth: number): boolean {
     return false;
   }
 
-  const elementNodesInSelection: Set<ElementNode> =
-    getElementNodesInSelection(selection);
+  const elementNodesInSelection: Set<ElementNode> = getElementNodesInSelection(selection);
 
   let totalDepth = 0;
 
@@ -53,7 +48,7 @@ function isIndentPermitted(maxDepth: number): boolean {
 
       if (!$isListNode(parent)) {
         throw new Error(
-          'ListMaxIndentLevelPlugin: A ListItemNode must have a ListNode for a parent.',
+          "ListMaxIndentLevelPlugin: A ListItemNode must have a ListNode for a parent."
         );
       }
 
@@ -64,14 +59,14 @@ function isIndentPermitted(maxDepth: number): boolean {
   return totalDepth <= maxDepth;
 }
 
-export const ListMaxIndentLevelPlugin = ({maxDepth}: Props) => {
+export const ListMaxIndentLevelPlugin = ({ maxDepth }: Props) => {
   const [editor] = useLexicalComposerContext();
   useEffect(() => {
     return editor.registerCommand(
       INDENT_CONTENT_COMMAND,
       () => !isIndentPermitted(maxDepth ?? 5),
-      COMMAND_PRIORITY_CRITICAL,
+      COMMAND_PRIORITY_CRITICAL
     );
   }, [editor, maxDepth]);
   return null;
-}
+};

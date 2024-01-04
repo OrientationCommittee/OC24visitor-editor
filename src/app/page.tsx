@@ -3,25 +3,21 @@ import { FC } from "react";
 
 import { categories_jp, ArticleType, MainCategoryType } from "./types";
 
-const ArticleCard:FC<{article: ArticleType}> = (props) => {
+const ArticleCard: FC<{ article: ArticleType }> = (props) => {
   const article: ArticleType = props.article;
   return (
-    <div
-      className="w-[20vw] border rounded p-4 mb-4"
-      key={article.title}
-    >
+    <div className="w-[20vw] border rounded p-4 mb-4" key={article.title}>
       <Link
         className="font-semibold text-lg mb-4"
-        href={{pathname: `/${article.title}/edit`, query: {id: article._id}}}
+        href={{ pathname: `/${article.title}/edit`, query: { id: article._id } }}
         as={`/${article.title}/edit`}
       >
         {article.title}
       </Link>
-      <div className="text-sm mt-2">
-        最終更新 {article.date}
-      </div>
+      <div className="text-sm mt-2">最終更新 {article.date}</div>
     </div>
-)}
+  );
+};
 
 export default async function Home() {
   // const articlesData: ArticleType[] = await getArticles();
@@ -36,8 +32,8 @@ export default async function Home() {
       content: "<p>にゃあ</p>",
       shown: false,
       _v: 1,
-    }
-  ]
+    },
+  ];
   return (
     <div>
       <h1 className="font-bold text-3xl mb-8">記事一覧</h1>
@@ -66,18 +62,15 @@ export default async function Home() {
                 {subCategories.map((subCategory) => {
                   return (
                     <div className="" key={subCategory}>
-                      <div className="font-semibold text-xl mt-16 mb-4">
-                        {subCategory}
-                      </div>
+                      <div className="font-semibold text-xl mt-16 mb-4">{subCategory}</div>
                       <div>
                         {articlesData
                           .filter(
-                            (e) =>
-                              e.mainCategory === mainCategory &&
-                              e.subCategory === subCategory
+                            (e) => e.mainCategory === mainCategory && e.subCategory === subCategory
                           )
-                          .map((article, i) => <ArticleCard key={i} article={article}/>)
-                        }
+                          .map((article, i) => (
+                            <ArticleCard key={i} article={article} />
+                          ))}
                       </div>
                     </div>
                   );

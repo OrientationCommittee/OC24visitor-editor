@@ -16,4 +16,4 @@ export type ArticleType = {
   content: string; // html形式
   shown: boolean; // 公開するかどうか
   _v?: number;
-}
+};

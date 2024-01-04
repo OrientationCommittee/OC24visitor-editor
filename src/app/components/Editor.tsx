@@ -33,7 +33,7 @@ const initialConfig: ComponentProps<typeof LexicalComposer>["initialConfig"] = {
   onError: (error) => console.error(error),
 };
 
-export const Editor: FC<{initialData?: ArticleType, edit: boolean}> = (props) => {
+export const Editor: FC<{ initialData?: ArticleType; edit: boolean }> = (props) => {
   const initialData: ArticleType = {
     _id: props?.initialData?._id ?? undefined,
     title: props?.initialData?.title ?? "",
@@ -41,12 +41,13 @@ export const Editor: FC<{initialData?: ArticleType, edit: boolean}> = (props) =>
     subCategory: props?.initialData?.subCategory ?? "",
     date: "0000/00/00",
     content: props?.initialData?.content ?? "",
-    shown: props?.initialData?.shown ?? false
-  }
+    shown: props?.initialData?.shown ?? false,
+  };
   const [articleState, setArticleState] = useState<ArticleType>(initialData);
-  const updateArticleState = (key: keyof ArticleType, value: any) => setArticleState((article: Readonly<ArticleType>) => {
-    return {...article, [key]: value}
-  })
+  const updateArticleState = (key: keyof ArticleType, value: any) =>
+    setArticleState((article: Readonly<ArticleType>) => {
+      return { ...article, [key]: value };
+    });
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
@@ -55,7 +56,11 @@ export const Editor: FC<{initialData?: ArticleType, edit: boolean}> = (props) =>
           <ToolbarPlugin />
           <InlineToolbarPlugin />
         </div>
-        <HTMLToolbarPlugin articleState={articleState} updateArticleState={updateArticleState} edit={props?.edit}/>
+        <HTMLToolbarPlugin
+          articleState={articleState}
+          updateArticleState={updateArticleState}
+          edit={props?.edit}
+        />
       </div>
 
       <div className="relative p-4 my-0 mx-0 border border-slate-400 min-h-[480px]">
@@ -81,4 +86,4 @@ export const Editor: FC<{initialData?: ArticleType, edit: boolean}> = (props) =>
       <LexicalClickableLinkPlugin />
     </LexicalComposer>
   );
-}
+};

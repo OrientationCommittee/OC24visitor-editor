@@ -6,7 +6,6 @@ import { Editor } from "src/app/components/Editor";
 import { ArticleType } from "../../types";
 // import { getArticle } from "../../utils/article";
 
-
 export default function Home() {
   const testData: ArticleType[] = [
     {
@@ -43,15 +42,14 @@ export default function Home() {
 
   // local
   const getArticle = (id: any) => {
-    return testData.find(e => e._id == id);
-  }
+    return testData.find((e) => e._id == id);
+  };
 
   const article = id && typeof id === "string" ? getArticle(id) : undefined;
 
-
   return (
     <div>
-      <Editor initialData={article} edit={Boolean(article)}/>
+      <Editor initialData={article} edit={Boolean(article)} />
     </div>
-  )
+  );
 }

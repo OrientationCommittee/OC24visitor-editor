@@ -3,12 +3,26 @@ import { useCallback } from "react";
 import { $getSelection, $isRangeSelection, $createParagraphNode } from "lexical";
 import { $getNearestNodeOfType } from "@lexical/utils";
 import { $setBlocksType } from "@lexical/selection";
-import { INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND, $isListNode, ListNode } from "@lexical/list";
-import { HeadingTagType, $createHeadingNode, $isHeadingNode, $createQuoteNode } from "@lexical/rich-text";
+import {
+  INSERT_ORDERED_LIST_COMMAND,
+  INSERT_UNORDERED_LIST_COMMAND,
+  $isListNode,
+  ListNode,
+} from "@lexical/list";
+import {
+  HeadingTagType,
+  $createHeadingNode,
+  $isHeadingNode,
+  $createQuoteNode,
+} from "@lexical/rich-text";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 
 import { TbH1, TbH2, TbH3, TbH4 } from "node_modules/react-icons/tb";
-import { MdFormatQuote, MdFormatListBulleted, MdFormatListNumbered } from "node_modules/react-icons/md";
+import {
+  MdFormatQuote,
+  MdFormatListBulleted,
+  MdFormatListNumbered,
+} from "node_modules/react-icons/md";
 import styles from "./CommonToolbar.module.scss";
 
 const SupportedBlockType = {
@@ -36,20 +50,20 @@ export const ToolbarPlugin: FC = () => {
         editor.update(() => {
           const selection = $getSelection();
           if ($isRangeSelection(selection)) {
-            $setBlocksType(selection, () => $createHeadingNode(type))
+            $setBlocksType(selection, () => $createHeadingNode(type));
           }
-        })
+        });
       } else {
         editor.update(() => {
           const selection = $getSelection();
           if ($isRangeSelection(selection)) {
-            $setBlocksType(selection, () => $createParagraphNode())
+            $setBlocksType(selection, () => $createParagraphNode());
           }
-        })
+        });
       }
     },
     [blockType, editor]
-  )
+  );
 
   const formatQuote = useCallback(() => {
     if (blockType !== "quote") {
@@ -63,9 +77,9 @@ export const ToolbarPlugin: FC = () => {
       editor.update(() => {
         const selection = $getSelection();
         if ($isRangeSelection(selection)) {
-          $setBlocksType(selection, () => $createParagraphNode())
+          $setBlocksType(selection, () => $createParagraphNode());
         }
-      })
+      });
     }
   }, [blockType, editor]);
 
@@ -76,9 +90,9 @@ export const ToolbarPlugin: FC = () => {
       editor.update(() => {
         const selection = $getSelection();
         if ($isRangeSelection(selection)) {
-          $setBlocksType(selection, () => $createParagraphNode())
+          $setBlocksType(selection, () => $createParagraphNode());
         }
-      })
+      });
     }
   }, [blockType, editor]);
 
@@ -89,9 +103,9 @@ export const ToolbarPlugin: FC = () => {
       editor.update(() => {
         const selection = $getSelection();
         if ($isRangeSelection(selection)) {
-          $setBlocksType(selection, () => $createParagraphNode())
+          $setBlocksType(selection, () => $createParagraphNode());
         }
-      })
+      });
     }
   }, [blockType, editor]);
 
@@ -102,9 +116,7 @@ export const ToolbarPlugin: FC = () => {
         if (!$isRangeSelection(selection)) return;
         const anchorNode = selection.anchor.getNode();
         const targetNode =
-          anchorNode.getKey() === "root"
-            ? anchorNode
-            : anchorNode.getTopLevelElementOrThrow();
+          anchorNode.getKey() === "root" ? anchorNode : anchorNode.getTopLevelElementOrThrow();
 
         if ($isHeadingNode(targetNode)) {
           const tag = targetNode.getTag();
@@ -135,7 +147,7 @@ export const ToolbarPlugin: FC = () => {
         aria-checked={blockType === "h1"}
         onClick={() => formatHeading("h1")}
       >
-        <TbH1 size={24}  />
+        <TbH1 size={24} />
       </button>
       <button
         type="button"
@@ -145,7 +157,7 @@ export const ToolbarPlugin: FC = () => {
         aria-checked={blockType === "h2"}
         onClick={() => formatHeading("h2")}
       >
-        <TbH2 size={24}  />
+        <TbH2 size={24} />
       </button>
       <button
         type="button"
@@ -155,7 +167,7 @@ export const ToolbarPlugin: FC = () => {
         aria-checked={blockType === "h3"}
         onClick={() => formatHeading("h3")}
       >
-        <TbH3 size={24}  />
+        <TbH3 size={24} />
       </button>
       <button
         type="button"
@@ -165,7 +177,7 @@ export const ToolbarPlugin: FC = () => {
         aria-checked={blockType === "h4"}
         onClick={() => formatHeading("h4")}
       >
-        <TbH4 size={24}  />
+        <TbH4 size={24} />
       </button>
       <button
         type="button"
@@ -178,25 +190,25 @@ export const ToolbarPlugin: FC = () => {
         <MdFormatQuote size={24} />
       </button>
       <button
-      type="button"
-      role="checkbox"
-      title={SupportedBlockType["number"]}
-      aria-label={SupportedBlockType["number"]}
-      aria-checked={blockType === "number"}
-      onClick={formatNumberedList}
-    >
-      <MdFormatListNumbered size={24} />
-    </button>
+        type="button"
+        role="checkbox"
+        title={SupportedBlockType["number"]}
+        aria-label={SupportedBlockType["number"]}
+        aria-checked={blockType === "number"}
+        onClick={formatNumberedList}
+      >
+        <MdFormatListNumbered size={24} />
+      </button>
       <button
-      type="button"
-      role="checkbox"
-      title={SupportedBlockType["bullet"]}
-      aria-label={SupportedBlockType["bullet"]}
-      aria-checked={blockType === "bullet"}
-      onClick={formatBulletList}
-    >
-      <MdFormatListBulleted size={24} />
-    </button>
+        type="button"
+        role="checkbox"
+        title={SupportedBlockType["bullet"]}
+        aria-label={SupportedBlockType["bullet"]}
+        aria-checked={blockType === "bullet"}
+        onClick={formatBulletList}
+      >
+        <MdFormatListBulleted size={24} />
+      </button>
     </div>
-  )
-}
+  );
+};

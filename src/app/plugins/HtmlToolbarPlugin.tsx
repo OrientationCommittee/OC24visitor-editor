@@ -68,10 +68,7 @@ export const HTMLToolbarPlugin: FC<{
         if (defaultContentAsHTML) {
           const parser = new DOMParser();
           const textHtmlMimeType: DOMParserSupportedType = "text/html";
-          const dom = parser.parseFromString(
-            defaultContentAsHTML,
-            textHtmlMimeType
-          );
+          const dom = parser.parseFromString(defaultContentAsHTML, textHtmlMimeType);
           const nodes = $generateNodesFromDOM(editor, dom);
           $getRoot().clear();
           $insertNodes(nodes);
@@ -176,19 +173,22 @@ export const HTMLToolbarPlugin: FC<{
             }}
           />
         </div>
-        {edit ?
-        <>
-          <button
-            type="button"
-            onClick={() => {
-              const _id = articleState._id;
-              alert("delete!");
-              //ここでutil使って削除
-            }}
-          >
-            <TbTrashX size={24} />
-          </button>
-        </> : ""}
+        {edit ? (
+          <>
+            <button
+              type="button"
+              onClick={() => {
+                const _id = articleState._id;
+                alert("delete!");
+                //ここでutil使って削除
+              }}
+            >
+              <TbTrashX size={24} />
+            </button>
+          </>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );

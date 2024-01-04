@@ -13,21 +13,9 @@ export const theme: EditorThemeClasses = {
   link: styles.link,
   list: {
     ul: styles.ul,
-    ulDepth: [
-      styles.ul1,
-      styles.ul2,
-      styles.ul3,
-      styles.ul4,
-      styles.ul5,
-    ],
+    ulDepth: [styles.ul1, styles.ul2, styles.ul3, styles.ul4, styles.ul5],
     ol: styles.ol,
-    olDepth: [
-      styles.ol1,
-      styles.ol2,
-      styles.ol3,
-      styles.ol4,
-      styles.ol5,
-    ],
+    olDepth: [styles.ol1, styles.ol2, styles.ol3, styles.ol4, styles.ol5],
     listitem: styles.listitem,
     nested: {
       listitem: styles.nestedListItem,
