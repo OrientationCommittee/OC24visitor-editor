@@ -174,17 +174,6 @@ export const HTMLToolbarPlugin: FC<{
           >
             <CiExport size={24} />
           </button>
-          <button
-            type="button"
-            title="import"
-            onClick={() => {
-              const defaultContentAsHTML =
-                '<h1 class="theme_h1__OZrJ5" dir="ltr"><span style="white-space: pre-wrap;">にゃあ</span></h1><p class="theme_paragraph__0NEJb" dir="ltr"><span style="white-space: pre-wrap;">にゃんにゃん</span></p>'; //ここに挿入したいhtmlを記述
-              editor.dispatchCommand(IMPORT_COMMAND, defaultContentAsHTML);
-            }}
-          >
-            <CiImport size={24} />
-          </button>
         </div>
       </div>
       <div className="flex items-center flex-wrap">
