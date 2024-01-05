@@ -214,10 +214,14 @@ export const HTMLToolbarPlugin: FC<{
                 if (tf) {
                   deleteArticle(id)
                     .then(() => {
+                      setLoading(true);
                       location.href = "/";
                     })
                     .catch((e) => {
                       console.log(e);
+                    })
+                    .finally(() => {
+                      setLoading(false);
                     });
                 }
               }}
