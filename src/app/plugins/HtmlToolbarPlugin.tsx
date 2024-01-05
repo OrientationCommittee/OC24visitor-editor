@@ -42,7 +42,6 @@ export const HTMLToolbarPlugin: FC<{
       try {
         setLoading(true);
         updateArticle(article._id, article);
-        console.log("updating");
       } catch (e) {
         console.log(e);
       } finally {
@@ -52,7 +51,6 @@ export const HTMLToolbarPlugin: FC<{
       try {
         setLoading(true);
         postArticle(article);
-        console.log("posting");
       } catch (e) {
         console.log(e);
       } finally {
@@ -69,7 +67,6 @@ export const HTMLToolbarPlugin: FC<{
     (
       getArguments: () => { exporter: (article: ArticleType, options: any) => void; options: any }
     ) => {
-      console.log("EXPORT_COMMAND入った");
       const { exporter, options } = getArguments();
 
       const contentAsHTML = $generateHtmlFromNodes(editor);
