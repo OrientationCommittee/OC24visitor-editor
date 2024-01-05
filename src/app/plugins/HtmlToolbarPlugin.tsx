@@ -19,6 +19,25 @@ import getCurrentDate from "../utils/getCurrentDate";
 import { categories_jp, MainCategoryType, ArticleType } from "../types";
 import { updateArticle, postArticle, deleteArticle } from "../utils/article";
 
+const articleValidator = (
+  article: ArticleType,
+  ...rest: { cond: boolean; error_message: string }[]
+) => {
+  const conditions = [
+    { cond: article.title !== "", error_message: "titleの値が不正です" },
+    { cond: article.subCategory !== "", error_message: "subCategoryの値が不正です" },
+  ];
+  return [...conditions, ...rest].map((e) => e.cond).every((e) => e)
+    ? { ok: true }
+    : {
+        ok: false,
+        message: [...conditions, ...rest]
+          .filter((e) => !e.cond)
+          .map((e) => e.error_message)
+          .join("\n"),
+      };
+};
+
 // HTMLToolbarPlugin
 export const HTMLToolbarPlugin: FC<{
   articleState: ArticleType;
@@ -35,29 +54,56 @@ export const HTMLToolbarPlugin: FC<{
   const subCategoryRef = useRef(articleState.subCategory);
   const titleRef = useRef(articleState.title);
 
-  const saveArticle = (article: ArticleType, options: { edit: boolean }) => {
-    const { edit } = options;
-
-    if (edit && article._id) {
-      try {
-        setLoading(true);
-        updateArticle(article._id, article);
-      } catch (e) {
-        console.log(e);
-      } finally {
-        setLoading(false);
-      }
-    } else if (!edit) {
-      try {
-        setLoading(true);
-        postArticle(article);
-      } catch (e) {
-        console.log(e);
-      } finally {
-        setLoading(false);
-      }
-    } else {
-      console.log("Error: save処理に失敗しました");
+  const saveArticle = (article: ArticleType, options: { type: "new" | "edit" | "delete" }) => {
+    const { type } = options;
+    const v = articleValidator(article);
+    switch (type) {
+      case "new":
+        if (!v.ok) {
+          alert(v.message);
+          return;
+        }
+        try {
+          setLoading(true);
+          postArticle(article);
+        } catch (e) {
+          console.log(e);
+        } finally {
+          setLoading(false);
+        }
+        break;
+      case "edit":
+        if (!article._id) return;
+        if (!v.ok) {
+          alert(v.message);
+          return;
+        }
+        try {
+          setLoading(true);
+          updateArticle(article._id, article);
+        } catch (e) {
+          console.log(e);
+        } finally {
+          setLoading(false);
+        }
+        break;
+      case "delete":
+        if (!article._id) return;
+        const tf = confirm("記事を削除します。本当によろしいですか？");
+        if (tf) {
+          deleteArticle(article._id)
+            .then(() => {
+              setLoading(true);
+              location.href = "/";
+            })
+            .catch((e) => {
+              console.log(e);
+            })
+            .finally(() => {
+              setLoading(false);
+            });
+        }
+        break;
     }
   };
 
@@ -160,21 +206,6 @@ export const HTMLToolbarPlugin: FC<{
             <span className="block w-[2em] cursor-pointer bg-gray-500 rounded-full p-[1px] after:block after:h-[1em] after:w-[1em] after:rounded-full after:bg-white after:transition peer-checked:bg-green-500 peer-checked:after:translate-x-[calc(100%-2px)]"></span>
           </label>
         </div>
-
-        {/* エクスポート・インポートボタン */}
-        <div>
-          <button
-            type="button"
-            title="export"
-            onClick={() => {
-              editor.dispatchCommand(EXPORT_COMMAND, () => {
-                return { exporter: saveArticle, options: { edit: edit } };
-              });
-            }}
-          >
-            <CiExport size={24} />
-          </button>
-        </div>
       </div>
       <div className="flex items-center flex-wrap">
         <div className="mr-4">タイトル</div>
@@ -189,30 +220,28 @@ export const HTMLToolbarPlugin: FC<{
             }}
           />
         </div>
+        {/* エクスポート・インポートボタン */}
+        <div>
+          <button
+            type="button"
+            title="export"
+            onClick={() => {
+              editor.dispatchCommand(EXPORT_COMMAND, () => {
+                return { exporter: saveArticle, options: { type: edit ? "edit" : "new" } };
+              });
+            }}
+          >
+            <CiExport size={24} />
+          </button>
+        </div>
         {edit ? (
           <>
             <button
               type="button"
               onClick={() => {
-                const id = articleState._id;
-                if (!id) {
-                  alert("記事idが不正です");
-                  return;
-                }
-                const tf = confirm("記事を削除します。本当によろしいですか？");
-                if (tf) {
-                  deleteArticle(id)
-                    .then(() => {
-                      setLoading(true);
-                      location.href = "/";
-                    })
-                    .catch((e) => {
-                      console.log(e);
-                    })
-                    .finally(() => {
-                      setLoading(false);
-                    });
-                }
+                editor.dispatchCommand(EXPORT_COMMAND, () => {
+                  return { exporter: saveArticle, options: { type: "delete" } };
+                });
               }}
             >
               <TbTrashX size={24} />
