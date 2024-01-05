@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import {
   $getRoot,
   $insertNodes,
@@ -19,44 +19,49 @@ import getCurrentDate from "../utils/getCurrentDate";
 import { categories_jp, MainCategoryType, ArticleType } from "../types";
 import { updateArticle, postArticle, deleteArticle } from "../utils/article";
 
-const saveArticle = (article: ArticleType, options: { edit: boolean }) => {
-  const { edit } = options;
-
-  if (edit && article._id) {
-    try {
-      updateArticle(article._id, article);
-      console.log("updating");
-    } catch (e) {
-      console.log(e);
-    }
-  } else if (!edit) {
-    try {
-      postArticle(article);
-      console.log("posting");
-    } catch (e) {
-      console.log(e);
-    }
-  } else {
-    console.log("Error: save処理に失敗しました");
-  }
-};
-
 // HTMLToolbarPlugin
 export const HTMLToolbarPlugin: FC<{
   articleState: ArticleType;
   updateArticleState: (key: keyof ArticleType, value: any) => void;
   edit: boolean;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }> = (props) => {
   const EXPORT_COMMAND: LexicalCommand<Function> = createCommand();
   const IMPORT_COMMAND: LexicalCommand<string> = createCommand();
   const [editor] = useLexicalComposerContext();
 
-  const articleState = props.articleState;
-  const updateArticleState = props.updateArticleState;
-  const edit = props.edit;
+  const { articleState, updateArticleState, edit, setLoading } = props;
 
   const subCategoryRef = useRef(articleState.subCategory);
   const titleRef = useRef(articleState.title);
+
+  const saveArticle = (article: ArticleType, options: { edit: boolean }) => {
+    const { edit } = options;
+
+    if (edit && article._id) {
+      try {
+        setLoading(true);
+        updateArticle(article._id, article);
+        console.log("updating");
+      } catch (e) {
+        console.log(e);
+      } finally {
+        setLoading(false);
+      }
+    } else if (!edit) {
+      try {
+        setLoading(true);
+        postArticle(article);
+        console.log("posting");
+      } catch (e) {
+        console.log(e);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      console.log("Error: save処理に失敗しました");
+    }
+  };
 
   // exportコマンド。ArticleTypeでエクスポートする。
   editor.registerCommand(

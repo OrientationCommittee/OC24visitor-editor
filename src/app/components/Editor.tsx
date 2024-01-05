@@ -55,7 +55,11 @@ export const Editor: FC<{ initialData?: ArticleType; edit: boolean }> = (props) 
   }, []);
 
   if (loading) {
-    return <div></div>;
+    return (
+      <div className="flex justify-center items-center h-[60vh]">
+        <h1 className="text-center items-middle">Loading...</h1>
+      </div>
+    );
   } else {
     return (
       <LexicalComposer initialConfig={initialConfig}>
@@ -68,6 +72,7 @@ export const Editor: FC<{ initialData?: ArticleType; edit: boolean }> = (props) 
             articleState={articleState}
             updateArticleState={updateArticleState}
             edit={props?.edit}
+            setLoading={setLoading}
           />
         </div>
 
