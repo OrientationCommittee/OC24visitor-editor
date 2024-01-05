@@ -17,7 +17,7 @@ import styles from "./CommonToolbar.module.scss";
 import getCurrentDate from "../utils/getCurrentDate";
 
 import { categories_jp, MainCategoryType, ArticleType } from "../types";
-import { updateArticle, postArticle } from "../utils/article";
+import { updateArticle, postArticle, deleteArticle } from "../utils/article";
 
 const saveArticle = (article: ArticleType, options: { edit: boolean }) => {
   const { edit } = options;
@@ -203,9 +203,21 @@ export const HTMLToolbarPlugin: FC<{
             <button
               type="button"
               onClick={() => {
-                const _id = articleState._id;
-                alert("delete!");
-                //ここでutil使って削除
+                const id = articleState._id;
+                if (!id) {
+                  alert("記事idが不正です");
+                  return;
+                }
+                const tf = confirm("記事を削除します。本当によろしいですか？");
+                if (tf) {
+                  deleteArticle(id)
+                    .then(() => {
+                      location.href = "/";
+                    })
+                    .catch((e) => {
+                      console.log(e);
+                    });
+                }
               }}
             >
               <TbTrashX size={24} />
