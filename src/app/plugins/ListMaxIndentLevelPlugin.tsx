@@ -10,7 +10,7 @@ import {
   ElementNode,
   INDENT_CONTENT_COMMAND,
 } from "lexical";
-import { FC, useEffect } from "react";
+import { useEffect } from "react";
 
 type Props = Readonly<{
   maxDepth: number | null | undefined;
@@ -40,7 +40,7 @@ function isIndentPermitted(maxDepth: number): boolean {
 
   let totalDepth = 0;
 
-  for (const elementNode of elementNodesInSelection) {
+  for (const elementNode of Array.from(elementNodesInSelection)) {
     if ($isListNode(elementNode)) {
       totalDepth = Math.max($getListDepth(elementNode) + 1, totalDepth);
     } else if ($isListItemNode(elementNode)) {
