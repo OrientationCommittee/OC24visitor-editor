@@ -4,21 +4,21 @@ import { MainCategoryType, ArticleType, ArticleTitleType } from "../types";
 //APIから記事の全てを取得する関数.
 export async function getArticles(): Promise<ArticleType[]> {
   const url = process.env.NEXT_PUBLIC_API_URL;
-  const response = await fetch(url as string);
+  const response = await fetch(url as string, { cache: "no-store" });
   return await response.json();
 }
 
 //APIから記事の一部を取得する関数.idは全記事取得の関数で得た_idを指定する.
 export async function getArticle(id: string): Promise<ArticleType> {
   const url = `${process.env.NEXT_PUBLIC_API_URL}/id/${id}`;
-  const response = await fetch(url);
+  const response = await fetch(url, { cache: "no-store" });
   return await response.json();
 }
 
 //APIから記事の一部をtitleによって取得する関数.
 export async function getArticleByTitle(title: string): Promise<ArticleType> {
   const url = `${process.env.NEXT_PUBLIC_API_URL}/title/${title}`;
-  const response = await fetch(url);
+  const response = await fetch(url, { cache: "no-store" });
   return await response.json();
 }
 
@@ -31,6 +31,7 @@ export async function postArticle(article: ArticleType): Promise<ArticleType> {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(article),
+    cache: "no-store",
   });
   return await response.json();
 }
@@ -44,6 +45,7 @@ export async function updateArticle(id: string, article: ArticleType): Promise<A
       "Content-Type": "application/json",
     },
     body: JSON.stringify(article),
+    cache: "no-store",
   });
   return await response.json();
 }
@@ -59,6 +61,7 @@ export async function updateArticleByTitle(
       "Content-Type": "application/json",
     },
     body: JSON.stringify(article),
+    cache: "no-store",
   });
   return await response.json();
 }
@@ -68,6 +71,7 @@ export async function deleteArticle(id: string): Promise<ArticleType> {
   const url = `${process.env.NEXT_PUBLIC_API_URL}/id/${id}`;
   const response = await fetch(url, {
     method: "DELETE",
+    cache: "no-store",
   });
   return await response.json();
 }
@@ -75,7 +79,7 @@ export async function deleteArticle(id: string): Promise<ArticleType> {
 //idとタイトル一覧を取得する関数.
 export async function getTitles(): Promise<ArticleTitleType[]> {
   const url = `${process.env.NEXT_PUBLIC_API_URL}/title`;
-  const response = await fetch(url as string);
+  const response = await fetch(url as string, { cache: "no-store" });
   return await response.json();
 }
 

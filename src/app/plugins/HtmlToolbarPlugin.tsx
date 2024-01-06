@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import {
   $getRoot,
   $insertNodes,
@@ -17,44 +17,116 @@ import styles from "./CommonToolbar.module.scss";
 import getCurrentDate from "../utils/getCurrentDate";
 
 import { categories_jp, MainCategoryType, ArticleType } from "../types";
+import { updateArticle, postArticle, deleteArticle } from "../utils/article";
+
+const articleValidator = (
+  article: ArticleType,
+  ...rest: { cond: boolean; error_message: string }[]
+) => {
+  const conditions = [
+    { cond: article.title !== "", error_message: "titleの値が不正です" },
+    { cond: article.subCategory !== "", error_message: "subCategoryの値が不正です" },
+  ];
+  return [...conditions, ...rest].map((e) => e.cond).every((e) => e)
+    ? { ok: true }
+    : {
+        ok: false,
+        message: [...conditions, ...rest]
+          .filter((e) => !e.cond)
+          .map((e) => e.error_message)
+          .join("\n"),
+      };
+};
 
 // HTMLToolbarPlugin
 export const HTMLToolbarPlugin: FC<{
   articleState: ArticleType;
   updateArticleState: (key: keyof ArticleType, value: any) => void;
   edit: boolean;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }> = (props) => {
   const EXPORT_COMMAND: LexicalCommand<Function> = createCommand();
   const IMPORT_COMMAND: LexicalCommand<string> = createCommand();
   const [editor] = useLexicalComposerContext();
 
-  const articleState = props.articleState;
-  const updateArticleState = props.updateArticleState;
-  const edit = props.edit;
+  const { articleState, updateArticleState, edit, setLoading } = props;
 
   const subCategoryRef = useRef(articleState.subCategory);
   const titleRef = useRef(articleState.title);
 
+  const saveArticle = (article: ArticleType, options: { type: "new" | "edit" | "delete" }) => {
+    const { type } = options;
+    const v = articleValidator(article);
+    switch (type) {
+      case "new":
+        if (!v.ok) {
+          alert(v.message);
+          return;
+        }
+        try {
+          setLoading(true);
+          postArticle(article);
+        } catch (e) {
+          console.log(e);
+        } finally {
+          setLoading(false);
+        }
+        break;
+      case "edit":
+        if (!article._id) return;
+        if (!v.ok) {
+          alert(v.message);
+          return;
+        }
+        try {
+          setLoading(true);
+          updateArticle(article._id, article);
+        } catch (e) {
+          console.log(e);
+        } finally {
+          setLoading(false);
+        }
+        break;
+      case "delete":
+        if (!article._id) return;
+        const tf = confirm("記事を削除します。本当によろしいですか？");
+        if (tf) {
+          deleteArticle(article._id)
+            .then(() => {
+              setLoading(true);
+              location.href = "/";
+            })
+            .catch((e) => {
+              console.log(e);
+            })
+            .finally(() => {
+              setLoading(false);
+            });
+        }
+        break;
+    }
+  };
+
   // exportコマンド。ArticleTypeでエクスポートする。
   editor.registerCommand(
     EXPORT_COMMAND,
-    (exporter: Function) => {
-      const Export = (editor: any, exporter?: Function) => {
-        const contentAsHTML = $generateHtmlFromNodes(editor);
-        const curDate = getCurrentDate();
-        const article = {
-          ...articleState,
-          subCategory: subCategoryRef.current,
-          article: contentAsHTML,
-          date: curDate,
-          title: titleRef.current,
-        };
-        if (exporter) {
-          exporter(article);
-        }
-        return null;
+    (
+      getArguments: () => { exporter: (article: ArticleType, options: any) => void; options: any }
+    ) => {
+      const { exporter, options } = getArguments();
+
+      const contentAsHTML = $generateHtmlFromNodes(editor);
+      const curDate = getCurrentDate();
+      const article: ArticleType = {
+        ...articleState,
+        subCategory: subCategoryRef.current,
+        content: contentAsHTML,
+        date: curDate,
+        title: titleRef.current,
       };
-      Export(editor, exporter);
+      if (exporter) {
+        exporter(article, options);
+      }
       return true;
     },
     COMMAND_PRIORITY_EDITOR
@@ -134,31 +206,6 @@ export const HTMLToolbarPlugin: FC<{
             <span className="block w-[2em] cursor-pointer bg-gray-500 rounded-full p-[1px] after:block after:h-[1em] after:w-[1em] after:rounded-full after:bg-white after:transition peer-checked:bg-green-500 peer-checked:after:translate-x-[calc(100%-2px)]"></span>
           </label>
         </div>
-
-        {/* エクスポート・インポートボタン */}
-        <div>
-          <button
-            type="button"
-            title="export"
-            onClick={() => {
-              const exporter = console.log; // ここにexport用の関数（引数：ArticleTypeオブジェクト）を記述
-              editor.dispatchCommand(EXPORT_COMMAND, exporter);
-            }}
-          >
-            <CiExport size={24} />
-          </button>
-          <button
-            type="button"
-            title="import"
-            onClick={() => {
-              const defaultContentAsHTML =
-                '<h1 class="theme_h1__OZrJ5" dir="ltr"><span style="white-space: pre-wrap;">にゃあ</span></h1><p class="theme_paragraph__0NEJb" dir="ltr"><span style="white-space: pre-wrap;">にゃんにゃん</span></p>'; //ここに挿入したいhtmlを記述
-              editor.dispatchCommand(IMPORT_COMMAND, defaultContentAsHTML);
-            }}
-          >
-            <CiImport size={24} />
-          </button>
-        </div>
       </div>
       <div className="flex items-center flex-wrap">
         <div className="mr-4">タイトル</div>
@@ -166,6 +213,7 @@ export const HTMLToolbarPlugin: FC<{
         {/* タイトル欄 */}
         <div className="py-0 px-[8px] text-gray border-gray-300 border rounded-[6px] min-w-[300px] mr-[20px]">
           <input
+            className="w-full"
             placeholder="タイトルを入力"
             defaultValue={articleState.title}
             onChange={(e) => {
@@ -173,14 +221,28 @@ export const HTMLToolbarPlugin: FC<{
             }}
           />
         </div>
+        {/* エクスポート・インポートボタン */}
+        <div>
+          <button
+            type="button"
+            title="export"
+            onClick={() => {
+              editor.dispatchCommand(EXPORT_COMMAND, () => {
+                return { exporter: saveArticle, options: { type: edit ? "edit" : "new" } };
+              });
+            }}
+          >
+            <CiExport size={24} />
+          </button>
+        </div>
         {edit ? (
           <>
             <button
               type="button"
               onClick={() => {
-                const _id = articleState._id;
-                alert("delete!");
-                //ここでutil使って削除
+                editor.dispatchCommand(EXPORT_COMMAND, () => {
+                  return { exporter: saveArticle, options: { type: "delete" } };
+                });
               }}
             >
               <TbTrashX size={24} />

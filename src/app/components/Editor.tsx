@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, ComponentProps, useState } from "react";
+import { FC, ComponentProps, useState, useEffect } from "react";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
@@ -49,41 +49,55 @@ export const Editor: FC<{ initialData?: ArticleType; edit: boolean }> = (props) 
       return { ...article, [key]: value };
     });
 
-  return (
-    <LexicalComposer initialConfig={initialConfig}>
-      <div className="flex justify-between items-start">
-        <div>
-          <ToolbarPlugin />
-          <InlineToolbarPlugin />
+  const [loading, setLoading] = useState<boolean>(true);
+  useEffect(() => {
+    setLoading(false);
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-[60vh]">
+        <h1 className="text-center items-middle">Loading...</h1>
+      </div>
+    );
+  } else {
+    return (
+      <LexicalComposer initialConfig={initialConfig}>
+        <div className="flex justify-between items-start">
+          <div>
+            <ToolbarPlugin />
+            <InlineToolbarPlugin />
+          </div>
+          <HTMLToolbarPlugin
+            articleState={articleState}
+            updateArticleState={updateArticleState}
+            edit={props?.edit}
+            setLoading={setLoading}
+          />
         </div>
-        <HTMLToolbarPlugin
-          articleState={articleState}
-          updateArticleState={updateArticleState}
-          edit={props?.edit}
-        />
-      </div>
 
-      <div className="relative p-4 my-0 mx-0 border border-slate-400 min-h-[480px]">
-        <RichTextPlugin
-          contentEditable={<ContentEditable className="outline-none" />}
-          placeholder={
-            <div className="absolute text-gray-500 pointer-events-none select-none top-4 left-4">
-              記事を作成
-            </div>
-          }
-          ErrorBoundary={LexicalErrorBoundary}
-        />
-      </div>
+        <div className="relative p-4 my-0 mx-0 border border-slate-400 min-h-[480px]">
+          <RichTextPlugin
+            contentEditable={<ContentEditable className="outline-none" />}
+            placeholder={
+              <div className="absolute text-gray-500 pointer-events-none select-none top-4 left-4">
+                記事を作成
+              </div>
+            }
+            ErrorBoundary={LexicalErrorBoundary}
+          />
+        </div>
 
-      <AutoFocusPlugin />
-      <HistoryPlugin />
-      <ListPlugin />
-      <CheckListPlugin />
-      <TabIndentationPlugin />
-      <ListMaxIndentLevelPlugin maxDepth={5} />
-      <MarkdownPlugin />
-      <LinkPlugin />
-      <LexicalClickableLinkPlugin />
-    </LexicalComposer>
-  );
+        <AutoFocusPlugin />
+        <HistoryPlugin />
+        <ListPlugin />
+        <CheckListPlugin />
+        <TabIndentationPlugin />
+        <ListMaxIndentLevelPlugin maxDepth={5} />
+        <MarkdownPlugin />
+        <LinkPlugin />
+        <LexicalClickableLinkPlugin />
+      </LexicalComposer>
+    );
+  }
 };
