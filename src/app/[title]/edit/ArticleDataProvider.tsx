@@ -7,7 +7,7 @@ export const ArticleDataProvider: FC<{ title: string; Editor: any }> = async (pr
   const Editor = props.Editor;
   const article = await getArticleByTitle(title);
   return (
-    <div>
+    <div className="pb-24">
       <Editor initialData={article} edit={true} />
     </div>
   );
