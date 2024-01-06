@@ -213,6 +213,7 @@ export const HTMLToolbarPlugin: FC<{
         {/* タイトル欄 */}
         <div className="py-0 px-[8px] text-gray border-gray-300 border rounded-[6px] min-w-[300px] mr-[20px]">
           <input
+            className="w-full"
             placeholder="タイトルを入力"
             defaultValue={articleState.title}
             onChange={(e) => {
