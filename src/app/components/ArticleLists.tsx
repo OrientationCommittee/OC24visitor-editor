@@ -3,14 +3,15 @@
 import { useRouter } from "next/navigation";
 import { FC, useEffect } from "react";
 import { ArticleType, MainCategoryType, categories_jp } from "../types";
+import Link from "next/link";
 
 const ArticleCard: FC<{ article: ArticleType }> = (props) => {
   const article: ArticleType = props.article;
   return (
     <div className="w-[20vw] border rounded p-4 mb-4" key={article.title}>
-      <a className="font-semibold text-lg mb-4" href={`/${article.title}/edit`}>
+      <Link className="font-semibold text-lg mb-4" href={`/${article.title}/edit`}>
         {article.title}
-      </a>
+      </Link>
       <div className="text-sm mt-2">最終更新 {article.date}</div>
     </div>
   );
@@ -26,14 +27,14 @@ export const ArticleLists = ({ articlesData }: { articlesData: ArticleType[] }) 
       {(Object.keys(categories_jp) as MainCategoryType[]).map((mainCategory) => {
         return (
           <div className="mr-4 w-[24vw]" key={mainCategory}>
-            <a className="font-semibold text-2xl mb-6" href={`#${mainCategory}`}>
+            <Link className="font-semibold text-2xl mb-6" href={`#${mainCategory}`}>
               {categories_jp[mainCategory]}
-            </a>
+            </Link>
             <div>
               <div className="mb-[-24px]">
-                <a className="text-base mb-10" href={`#${mainCategory}`}>
+                <Link className="text-base mb-10" href={`#${mainCategory}`}>
                   #{mainCategory}
-                </a>
+                </Link>
               </div>
               {Array.from(
                 new Map(
