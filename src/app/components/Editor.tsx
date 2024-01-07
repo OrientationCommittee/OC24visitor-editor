@@ -54,6 +54,14 @@ export const Editor: FC<{ initialData?: ArticleType; edit: boolean }> = (props) 
     setLoading(false);
   }, []);
 
+  useEffect(() => {
+    if (!loading) {
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+      });
+    }
+  }, [loading]);
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-[60vh]">
