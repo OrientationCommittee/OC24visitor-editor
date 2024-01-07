@@ -164,8 +164,9 @@ export const HTMLToolbarPlugin: FC<{
 
         {/* カテゴリ欄 */}
         <div className="flex items-center justify-start mr-[20px]">
-          <div className="ml-0 pl-[8px] pr-[20px] text-gray border-gray-300 border rounded-l-[6px]">
+          <div className="ml-0 pl-[8px] text-gray border-gray-300 border rounded-l-[6px] after:content-['▼'] after:text-gray-500 after:absolute after:-translate-x-4 after:scale-y-75 after:pointer-events-none">
             <select
+              className="w-[165px]"
               value={articleState.mainCategory}
               onChange={(e) => {
                 updateArticleState("mainCategory", e.target.value);
