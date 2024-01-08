@@ -17,7 +17,7 @@ import styles from "./CommonToolbar.module.scss";
 import getCurrentDate from "../utils/getCurrentDate";
 
 import { categories_jp, MainCategoryType, ArticleType } from "../types";
-import { updateArticle, postArticle, deleteArticle } from "../utils/article";
+import { getTitles, updateArticle, postArticle, deleteArticle } from "../utils/article";
 
 const articleValidator = (
   article: ArticleType,
@@ -54,9 +54,15 @@ export const HTMLToolbarPlugin: FC<{
   const subCategoryRef = useRef(articleState.subCategory);
   const titleRef = useRef(articleState.title);
 
-  const saveArticle = (article: ArticleType, options: { type: "new" | "edit" | "delete" }) => {
+  const saveArticle = async (
+    article: ArticleType,
+    options: { type: "new" | "edit" | "delete" }
+  ) => {
     const { type } = options;
-    const v = articleValidator(article);
+    const v = articleValidator(article, {
+      cond: (await getTitles()).map((e) => e._id).includes(article.title),
+      error_message: "タイトルは一意である必要があります",
+    });
     switch (type) {
       case "new":
         if (!v.ok) {
