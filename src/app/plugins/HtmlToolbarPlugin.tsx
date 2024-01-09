@@ -51,6 +51,8 @@ export const HTMLToolbarPlugin: FC<{
 
   const { articleState, updateArticleState, edit, setLoading } = props;
 
+  const initialTitle = articleState.title;
+
   const subCategoryRef = useRef(articleState.subCategory);
   const titleRef = useRef(articleState.title);
 
@@ -60,8 +62,11 @@ export const HTMLToolbarPlugin: FC<{
   ) => {
     const { type } = options;
     const v = articleValidator(article, {
-      cond: (await getTitles()).map((e) => e._id).includes(article.title),
-      error_message: "タイトルは一意である必要があります",
+      cond: !(await getTitles())
+        .map((e) => e.title)
+        .filter((e) => e !== initialTitle)
+        .includes(article.title),
+      error_message: `タイトル「${article.title}」の記事が既に存在しています`,
     });
     switch (type) {
       case "new":
