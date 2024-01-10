@@ -40,6 +40,25 @@ const articleValidator = (
       };
 };
 
+class Others {
+  constructor(initialTitle: string) {
+    this.initialTitle = initialTitle;
+    this.disallowed = [];
+  }
+  initialTitle: string;
+  disallowed: string[];
+  async getTitlesDisallowed() {
+    if (!this.disallowed) {
+      const disallowedTitles = (await getTitles())
+        .map((e) => e.title)
+        .filter((e) => e !== this.initialTitle);
+      console.log(disallowedTitles);
+      this.disallowed = disallowedTitles;
+    }
+    return this.disallowed;
+  }
+}
+
 // HTMLToolbarPlugin
 export const HTMLToolbarPlugin: FC<{
   articleRef: MutableRefObject<ArticleType>;
@@ -52,6 +71,7 @@ export const HTMLToolbarPlugin: FC<{
   const { articleRef, edit } = props;
 
   const initialTitle = articleRef.current.title;
+  const others = new Others(initialTitle);
 
   const showToast = useToast();
 
@@ -60,11 +80,9 @@ export const HTMLToolbarPlugin: FC<{
     options: { type: "new" | "edit" | "delete" }
   ) => {
     const { type } = options;
+    const allowedTitles = await others.getTitlesDisallowed();
     const v = articleValidator(article, {
-      cond: !(await getTitles())
-        .map((e) => e.title)
-        .filter((e) => e !== initialTitle)
-        .includes(article.title),
+      cond: !allowedTitles.includes(article.title),
       error_message: `タイトル「${article.title}」の記事が既に存在しています`,
     });
     switch (type) {
@@ -74,8 +92,12 @@ export const HTMLToolbarPlugin: FC<{
           return;
         }
         try {
-          await postArticle(article);
-          location.href = "/";
+          const response = await postArticle(article);
+          if (response.status === 200) {
+            location.href = "/";
+          } else {
+            showToast({ text: "送信に失敗しました", type: "error" });
+          }
         } catch (e) {
           console.log(e);
           showToast({ text: "送信に失敗しました", type: "error" });
@@ -88,8 +110,12 @@ export const HTMLToolbarPlugin: FC<{
           return;
         }
         try {
-          await updateArticle(article._id, article);
-          showToast({ text: "送信に成功しました", type: "success" });
+          const response = await updateArticle(article._id, article);
+          if (response.status === 200) {
+            showToast({ text: "送信に成功しました", type: "success" });
+          } else {
+            showToast({ text: "送信に失敗しました", type: "error" });
+          }
         } catch (e) {
           console.log(e);
           showToast({ text: "送信に失敗しました", type: "error" });

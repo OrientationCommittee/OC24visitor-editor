@@ -23,7 +23,7 @@ export async function getArticleByTitle(title: string): Promise<ArticleType> {
 }
 
 //APIに記事を追加する関数.引数には_idと_vはいらない.
-export async function postArticle(article: ArticleType): Promise<ArticleType> {
+export async function postArticle(article: ArticleType): Promise<Response> {
   const url = process.env.NEXT_PUBLIC_API_URL;
   const response = await fetch(url as string, {
     method: "POST",
@@ -33,11 +33,11 @@ export async function postArticle(article: ArticleType): Promise<ArticleType> {
     body: JSON.stringify(article),
     cache: "no-store",
   });
-  return await response.json();
+  return response;
 }
 
 //APIの記事を更新する関数.
-export async function updateArticle(id: string, article: ArticleType): Promise<ArticleType> {
+export async function updateArticle(id: string, article: ArticleType): Promise<Response> {
   const url = `${process.env.NEXT_PUBLIC_API_URL}/id/${id}`;
   const response = await fetch(url, {
     method: "PUT",
@@ -47,7 +47,7 @@ export async function updateArticle(id: string, article: ArticleType): Promise<A
     body: JSON.stringify(article),
     cache: "no-store",
   });
-  return await response.json();
+  return response;
 }
 //APIの記事をtitleで指定して更新する関数.
 export async function updateArticleByTitle(
