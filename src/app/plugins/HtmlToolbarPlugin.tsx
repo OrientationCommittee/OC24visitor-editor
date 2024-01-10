@@ -75,14 +75,11 @@ export const HTMLToolbarPlugin: FC<{
           return;
         }
         try {
-          setLoading(true);
           await postArticle(article);
           location.href = "/";
         } catch (e) {
           console.log(e);
           showToast({ text: "送信に失敗しました", type: "error" });
-        } finally {
-          setLoading(false);
         }
         break;
       case "edit":
@@ -92,32 +89,22 @@ export const HTMLToolbarPlugin: FC<{
           return;
         }
         try {
-          setLoading(true);
-          updateArticle(article._id, article);
+          await updateArticle(article._id, article);
           showToast({ text: "送信に成功しました", type: "success" });
         } catch (e) {
           console.log(e);
           showToast({ text: "送信に失敗しました", type: "error" });
-        } finally {
-          setLoading(false);
         }
         break;
       case "delete":
         if (!article._id) return;
-        const tf = confirm("記事を削除します。本当によろしいですか？");
-        if (tf) {
-          deleteArticle(article._id)
-            .then(() => {
-              setLoading(true);
-              location.href = "/";
-            })
-            .catch((e) => {
-              console.log(e);
-              showToast({ text: "送信に失敗しました", type: "error" });
-            })
-            .finally(() => {
-              setLoading(false);
-            });
+        if (!confirm("記事を削除します。本当によろしいですか？")) return;
+        try {
+          await deleteArticle(article._id);
+          location.href = "/";
+        } catch (e) {
+          console.log(e);
+          showToast({ text: "送信に失敗しました", type: "error" });
         }
         break;
     }
