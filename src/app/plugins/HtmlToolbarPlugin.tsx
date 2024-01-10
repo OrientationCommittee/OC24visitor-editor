@@ -44,13 +44,12 @@ const articleValidator = (
 export const HTMLToolbarPlugin: FC<{
   articleRef: MutableRefObject<ArticleType>;
   edit: boolean;
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }> = (props) => {
   const EXPORT_COMMAND: LexicalCommand<Function> = createCommand();
   const IMPORT_COMMAND: LexicalCommand<string> = createCommand();
   const [editor] = useLexicalComposerContext();
 
-  const { articleRef, edit, setLoading } = props;
+  const { articleRef, edit } = props;
 
   const initialTitle = articleRef.current.title;
 
