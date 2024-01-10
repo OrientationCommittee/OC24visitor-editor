@@ -64,7 +64,18 @@ export const Editor: FC<{ initialData?: ArticleType; edit: boolean }> = (props) 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-[60vh]">
-        <h1 className="text-center items-middle">Loading...</h1>
+        <button type="button" className="flex items-center bg-gray-200 h-[48px] p-3">
+          <svg
+            className="animate-slowspin fill-none stroke-sky-500 stroke-[10px]"
+            width="32"
+            height="32"
+            strokeDasharray="14"
+            viewBox="0 0 100 100"
+          >
+            <circle cx="50" cy="50" r="40" />
+          </svg>
+          <span className="text-center items-middle px-4 text-xl font-medium">Loading...</span>
+        </button>
       </div>
     );
   } else {

@@ -14,11 +14,16 @@ const config: Config = {
       },
       animation: {
         fade: "fadeIn .2s ease",
+        slowspin: "slowspin 3s linear infinite",
       },
       keyframes: {
         fadeIn: {
           from: { opacity: "0" },
           to: { opacity: "1" },
+        },
+        slowspin: {
+          from: { transform: "rotate(0deg)" },
+          to: { transform: "rotate(360deg)" },
         },
       },
     },
