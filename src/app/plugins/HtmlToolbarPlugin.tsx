@@ -35,7 +35,7 @@ const articleValidator: (
   const messages = [...conditions, ...rest]
     .filter((e) => e.cond)
     .map((e) => e.error_message)
-    .filter((e) => !e);
+    .filter((e) => e);
   return messages
     ? {
         ok: false,
