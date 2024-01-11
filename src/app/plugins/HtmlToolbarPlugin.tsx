@@ -32,11 +32,14 @@ const articleValidator: (
     { cond: article.title === "", error_message: "titleの値が不正です" },
     { cond: article.subCategory === "", error_message: "subCategoryの値が不正です" },
   ];
-  const errorMessages = [...conditions, ...rest].filter((e) => e.cond).map((e) => e.error_message);
-  return errorMessages
+  const messages = [...conditions, ...rest]
+    .filter((e) => e.cond)
+    .map((e) => e.error_message)
+    .filter((e) => !e);
+  return messages
     ? {
         ok: false,
-        message: errorMessages.join("\n"),
+        message: messages.join("\n"),
       }
     : { ok: true }; // error_messageが無い
 };
