@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, MutableRefObject, useEffect, useRef, useState } from "react";
 import {
   $getRoot,
   $insertNodes,
@@ -18,6 +18,8 @@ import getCurrentDate from "../utils/getCurrentDate";
 
 import { categories_jp, MainCategoryType, ArticleType } from "../types";
 import { getTitles, updateArticle, postArticle, deleteArticle } from "../utils/article";
+
+import { useToast } from "./useToast";
 
 const articleValidator = (
   article: ArticleType,
@@ -40,21 +42,18 @@ const articleValidator = (
 
 // HTMLToolbarPlugin
 export const HTMLToolbarPlugin: FC<{
-  articleState: ArticleType;
-  updateArticleState: (key: keyof ArticleType, value: any) => void;
+  articleRef: MutableRefObject<ArticleType>;
   edit: boolean;
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }> = (props) => {
   const EXPORT_COMMAND: LexicalCommand<Function> = createCommand();
   const IMPORT_COMMAND: LexicalCommand<string> = createCommand();
   const [editor] = useLexicalComposerContext();
 
-  const { articleState, updateArticleState, edit, setLoading } = props;
+  const { articleRef, edit } = props;
 
-  const initialTitle = articleState.title;
+  const initialTitle = articleRef.current.title;
 
-  const subCategoryRef = useRef(articleState.subCategory);
-  const titleRef = useRef(articleState.title);
+  const showToast = useToast();
 
   const saveArticle = async (
     article: ArticleType,
@@ -75,12 +74,11 @@ export const HTMLToolbarPlugin: FC<{
           return;
         }
         try {
-          setLoading(true);
-          postArticle(article);
+          await postArticle(article);
+          location.href = "/";
         } catch (e) {
           console.log(e);
-        } finally {
-          setLoading(false);
+          showToast({ text: "送信に失敗しました", type: "error" });
         }
         break;
       case "edit":
@@ -90,29 +88,22 @@ export const HTMLToolbarPlugin: FC<{
           return;
         }
         try {
-          setLoading(true);
-          updateArticle(article._id, article);
+          await updateArticle(article._id, article);
+          showToast({ text: "送信に成功しました", type: "success" });
         } catch (e) {
           console.log(e);
-        } finally {
-          setLoading(false);
+          showToast({ text: "送信に失敗しました", type: "error" });
         }
         break;
       case "delete":
         if (!article._id) return;
-        const tf = confirm("記事を削除します。本当によろしいですか？");
-        if (tf) {
-          deleteArticle(article._id)
-            .then(() => {
-              setLoading(true);
-              location.href = "/";
-            })
-            .catch((e) => {
-              console.log(e);
-            })
-            .finally(() => {
-              setLoading(false);
-            });
+        if (!confirm("記事を削除します。本当によろしいですか？")) return;
+        try {
+          await deleteArticle(article._id);
+          location.href = "/";
+        } catch (e) {
+          console.log(e);
+          showToast({ text: "送信に失敗しました", type: "error" });
         }
         break;
     }
@@ -128,15 +119,11 @@ export const HTMLToolbarPlugin: FC<{
 
       const contentAsHTML = $generateHtmlFromNodes(editor);
       const curDate = getCurrentDate();
-      const article: ArticleType = {
-        ...articleState,
-        subCategory: subCategoryRef.current,
-        content: contentAsHTML,
-        date: curDate,
-        title: titleRef.current,
-      };
+      articleRef.current.content = contentAsHTML;
+      articleRef.current.date = curDate;
+
       if (exporter) {
-        exporter(article, options);
+        exporter(articleRef.current, options);
       }
       return true;
     },
@@ -165,7 +152,7 @@ export const HTMLToolbarPlugin: FC<{
   );
 
   useEffect(() => {
-    editor.dispatchCommand(IMPORT_COMMAND, articleState.content);
+    editor.dispatchCommand(IMPORT_COMMAND, articleRef.current.content);
   });
 
   return (
@@ -178,9 +165,9 @@ export const HTMLToolbarPlugin: FC<{
           <div className="ml-0 pl-[8px] text-gray border-gray-300 border rounded-l-[6px] after:content-['▼'] after:text-gray-500 after:absolute after:-translate-x-4 after:scale-y-75 after:pointer-events-none">
             <select
               className="w-[165px]"
-              value={articleState.mainCategory}
+              defaultValue={articleRef.current.mainCategory}
               onChange={(e) => {
-                updateArticleState("mainCategory", e.target.value);
+                articleRef.current.mainCategory = e.target.value as MainCategoryType;
               }}
             >
               {...(Object.keys(categories_jp) as MainCategoryType[]).map((mainCategory, index) => {
@@ -195,9 +182,9 @@ export const HTMLToolbarPlugin: FC<{
           <div className="ml-[-1px] py-0 px-[8px] text-gray border-gray-300 border rounded-r-[6px]">
             <input
               placeholder="サブカテゴリを入力"
-              defaultValue={articleState.subCategory}
+              defaultValue={articleRef.current.subCategory}
               onChange={(e) => {
-                subCategoryRef.current = e.target.value;
+                articleRef.current.subCategory = e.target.value;
               }}
             />
           </div>
@@ -209,10 +196,10 @@ export const HTMLToolbarPlugin: FC<{
           <label>
             <input
               type="checkbox"
-              checked={articleState.shown}
+              defaultChecked={articleRef.current.shown}
               className="peer sr-only"
               onChange={(e) => {
-                updateArticleState("shown", e.target.checked);
+                articleRef.current.shown = e.target.checked;
               }}
             />
             <span className="block w-[2em] cursor-pointer bg-gray-500 rounded-full p-[1px] after:block after:h-[1em] after:w-[1em] after:rounded-full after:bg-white after:transition peer-checked:bg-green-500 peer-checked:after:translate-x-[calc(100%-2px)]"></span>
@@ -227,9 +214,9 @@ export const HTMLToolbarPlugin: FC<{
           <input
             className="w-full"
             placeholder="タイトルを入力"
-            defaultValue={articleState.title}
+            defaultValue={articleRef.current.title}
             onChange={(e) => {
-              titleRef.current = e.target.value;
+              articleRef.current.title = e.target.value;
             }}
           />
         </div>
