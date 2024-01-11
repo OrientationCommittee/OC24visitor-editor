@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, MutableRefObject, useEffect, useRef, useState } from "react";
+import { FC, MutableRefObject, useEffect } from "react";
 import {
   $getRoot,
   $insertNodes,
@@ -12,7 +12,7 @@ import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext
 import { $generateHtmlFromNodes } from "@lexical/html";
 import { $generateNodesFromDOM } from "@lexical/html";
 
-import { CiExport, CiImport } from "react-icons/ci";
+import { CiExport } from "react-icons/ci";
 import { TbTrashX } from "react-icons/tb";
 import styles from "./CommonToolbar.module.scss";
 
@@ -41,7 +41,7 @@ const articleValidator: (
         ok: false,
         message: messages.join("\n"),
       }
-    : { ok: true }; // error_messageが無い
+    : { ok: true }; // エラーメッセージが無い
 };
 
 // HTMLToolbarPlugin
@@ -156,6 +156,7 @@ export const HTMLToolbarPlugin: FC<{
   );
 
   // importコマンド。ArticleTypeにおけるcontentのみ、インポートする。
+  // 直接は触らない
   editor.registerCommand(
     IMPORT_COMMAND,
     (defaultContentAsHTML: string) => {
@@ -176,6 +177,8 @@ export const HTMLToolbarPlugin: FC<{
     COMMAND_PRIORITY_EDITOR
   );
 
+  // 最初に記事の内容を読み込む
+  // ほかのカテゴリとかはdefaultValueとして下で読み込んでる
   useEffect(() => {
     editor.dispatchCommand(IMPORT_COMMAND, articleRef.current.content);
   });
