@@ -1,3 +1,5 @@
+"use client";
+
 import { FC, MutableRefObject, useEffect, useRef, useState } from "react";
 import {
   $getRoot,
@@ -39,25 +41,6 @@ const articleValidator: (
     : { ok: true }; // error_messageが無い
 };
 
-class Others {
-  constructor(initialTitle: string) {
-    this.initialTitle = initialTitle;
-    this.disallowed = [];
-  }
-  initialTitle: string;
-  disallowed: string[];
-  async getTitlesDisallowed() {
-    if (!this.disallowed) {
-      const disallowedTitles = (await getTitles())
-        .map((e) => e.title)
-        .filter((e) => e !== this.initialTitle);
-      console.log(disallowedTitles);
-      this.disallowed = disallowedTitles;
-    }
-    return this.disallowed;
-  }
-}
-
 // HTMLToolbarPlugin
 export const HTMLToolbarPlugin: FC<{
   articleRef: MutableRefObject<ArticleType>;
@@ -69,69 +52,83 @@ export const HTMLToolbarPlugin: FC<{
 
   const { articleRef, edit } = props;
 
-  const initialTitle = articleRef.current.title;
-  const others = new Others(initialTitle);
+  const id = articleRef.current._id;
 
   const showToast = useToast();
 
-  const saveArticle = async (
-    article: ArticleType,
-    options: { type: "new" | "edit" | "delete" }
-  ) => {
+  const saveArticle = (article: ArticleType, options: { type: "new" | "edit" | "delete" }) => {
     const { type } = options;
-    const disallowedTitles = await others.getTitlesDisallowed();
-    const v = articleValidator(article, {
-      cond: disallowedTitles.includes(article.title),
-      error_message: `タイトル「${article.title}」の記事が既に存在しています`,
-    });
-    switch (type) {
-      case "new":
-        if (!v.ok) {
-          alert(v.message);
-          return;
+    getTitles()
+      .then((titles) => {
+        return titles.filter((e) => e._id !== id).map((e) => e.title);
+      })
+      .then((disallowedTitles) => {
+        const v = articleValidator(article, {
+          cond: disallowedTitles.includes(article.title),
+          error_message: `タイトル「${article.title}」の記事が既に存在しています`,
+        });
+        switch (type) {
+          case "new":
+            if (!v.ok) {
+              alert(v.message);
+              return;
+            }
+            postArticle(article)
+              .then((response) => {
+                if (response.status === 200) {
+                  location.href = "/";
+                } else {
+                  console.log(response);
+                  showToast({ text: "送信に失敗しました", type: "error" });
+                }
+              })
+              .catch((e) => {
+                console.log(e);
+                showToast({ text: e, type: "error" });
+              });
+            break;
+          case "edit":
+            if (!article._id) {
+              showToast({ text: "記事データにidが存在しません" });
+              return;
+            }
+            if (!v.ok && v.message) {
+              showToast({ text: v.message, type: "error" });
+              return;
+            }
+            updateArticle(article._id, article)
+              .then((response) => {
+                if (response.status === 200) {
+                  showToast({ text: "送信に成功しました", type: "success" });
+                } else {
+                  console.log(response);
+                  showToast({ text: "送信に失敗しました", type: "error" });
+                }
+              })
+              .catch((e) => {
+                console.log(e);
+                showToast({ text: e, type: "error" });
+              });
+            break;
+          case "delete":
+            if (!article._id) return;
+            if (!confirm("記事を削除します。本当によろしいですか？")) return;
+            deleteArticle(article._id)
+              .then((response) => {
+                if (response.status === 200) {
+                  location.href = "/";
+                } else {
+                  console.log(response);
+                  showToast({ text: "送信に失敗しました", type: "error" });
+                }
+              })
+              .catch((e) => {
+                console.log(e);
+                showToast({ text: e, type: "error" });
+              });
+            break;
         }
-        try {
-          const response = await postArticle(article);
-          if (response.status === 200) {
-            location.href = "/";
-          } else {
-            showToast({ text: "送信に失敗しました", type: "error" });
-          }
-        } catch (e) {
-          console.log(e);
-          showToast({ text: "送信に失敗しました", type: "error" });
-        }
-        break;
-      case "edit":
-        if (!article._id) return;
-        if (!v.ok) {
-          alert(v.message);
-          return;
-        }
-        try {
-          const response = await updateArticle(article._id, article);
-          if (response.status === 200) {
-            showToast({ text: "送信に成功しました", type: "success" });
-          } else {
-            showToast({ text: "送信に失敗しました", type: "error" });
-          }
-        } catch (e) {
-          console.log(e);
-          showToast({ text: "送信に失敗しました", type: "error" });
-        }
-        break;
-      case "delete":
-        if (!article._id) return;
-        if (!confirm("記事を削除します。本当によろしいですか？")) return;
-        try {
-          await deleteArticle(article._id);
-          location.href = "/";
-        } catch (e) {
-          console.log(e);
-          showToast({ text: "送信に失敗しました", type: "error" });
-        }
-        break;
-    }
+      });
   };
 
   // exportコマンド。ArticleTypeでエクスポートする。
