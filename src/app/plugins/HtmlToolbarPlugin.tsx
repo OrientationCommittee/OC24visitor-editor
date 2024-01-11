@@ -21,23 +21,22 @@ import { getTitles, updateArticle, postArticle, deleteArticle } from "../utils/a
 
 import { useToast } from "./useToast";
 
-const articleValidator = (
+const articleValidator: (
   article: ArticleType,
   ...rest: { cond: boolean; error_message: string }[]
-) => {
+) => { ok: boolean; message?: string } = (article, ...rest) => {
+  //弾く条件と弾く際のメッセージ
   const conditions = [
-    { cond: article.title !== "", error_message: "titleの値が不正です" },
-    { cond: article.subCategory !== "", error_message: "subCategoryの値が不正です" },
+    { cond: article.title === "", error_message: "titleの値が不正です" },
+    { cond: article.subCategory === "", error_message: "subCategoryの値が不正です" },
   ];
-  return [...conditions, ...rest].map((e) => e.cond).every((e) => e)
-    ? { ok: true }
-    : {
+  const errorMessages = [...conditions, ...rest].filter((e) => e.cond).map((e) => e.error_message);
+  return errorMessages
+    ? {
         ok: false,
-        message: [...conditions, ...rest]
-          .filter((e) => !e.cond)
-          .map((e) => e.error_message)
-          .join("\n"),
-      };
+        message: errorMessages.join("\n"),
+      }
+    : { ok: true }; // error_messageが無い
 };
 
 class Others {
@@ -80,9 +79,9 @@ export const HTMLToolbarPlugin: FC<{
     options: { type: "new" | "edit" | "delete" }
   ) => {
     const { type } = options;
-    const allowedTitles = await others.getTitlesDisallowed();
+    const disallowedTitles = await others.getTitlesDisallowed();
     const v = articleValidator(article, {
-      cond: !allowedTitles.includes(article.title),
+      cond: disallowedTitles.includes(article.title),
       error_message: `タイトル「${article.title}」の記事が既に存在しています`,
     });
     switch (type) {
