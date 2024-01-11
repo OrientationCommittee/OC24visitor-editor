@@ -68,7 +68,7 @@ export const HTMLToolbarPlugin: FC<{
       .then((disallowedTitles) => {
         const v = articleValidator(article, {
           cond: disallowedTitles.includes(article.title),
-          error_message: `タイトル「${article.title}」の記事が既に存在しています`,
+          error_message: `title「${article.title}」の記事が既に存在しています`,
         });
         switch (type) {
           case "new":
