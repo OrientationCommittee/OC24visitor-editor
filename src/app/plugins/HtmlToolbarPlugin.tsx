@@ -1,4 +1,6 @@
-import { FC, MutableRefObject, useEffect, useRef, useState } from "react";
+"use client";
+
+import { FC, MutableRefObject, useEffect } from "react";
 import {
   $getRoot,
   $insertNodes,
@@ -10,7 +12,7 @@ import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext
 import { $generateHtmlFromNodes } from "@lexical/html";
 import { $generateNodesFromDOM } from "@lexical/html";
 
-import { CiExport, CiImport } from "react-icons/ci";
+import { CiExport } from "react-icons/ci";
 import { TbTrashX } from "react-icons/tb";
 import styles from "./CommonToolbar.module.scss";
 
@@ -21,23 +23,25 @@ import { getTitles, updateArticle, postArticle, deleteArticle } from "../utils/a
 
 import { useToast } from "./useToast";
 
-const articleValidator = (
+const articleValidator: (
   article: ArticleType,
   ...rest: { cond: boolean; error_message: string }[]
-) => {
+) => { ok: boolean; message?: string[] } = (article, ...rest) => {
+  //弾く条件と弾く際のメッセージ
   const conditions = [
-    { cond: article.title !== "", error_message: "titleの値が不正です" },
-    { cond: article.subCategory !== "", error_message: "subCategoryの値が不正です" },
+    { cond: article.title === "", error_message: "titleの値が不正です" },
+    { cond: article.subCategory === "", error_message: "subCategoryの値が不正です" },
   ];
-  return [...conditions, ...rest].map((e) => e.cond).every((e) => e)
-    ? { ok: true }
-    : {
+  const messages = [...conditions, ...rest]
+    .filter((e) => e.cond)
+    .map((e) => e.error_message)
+    .filter((e) => e);
+  return messages.length
+    ? {
         ok: false,
-        message: [...conditions, ...rest]
-          .filter((e) => !e.cond)
-          .map((e) => e.error_message)
-          .join("\n"),
-      };
+        message: messages,
+      }
+    : { ok: true }; // エラーメッセージが無い
 };
 
 // HTMLToolbarPlugin
@@ -51,62 +55,86 @@ export const HTMLToolbarPlugin: FC<{
 
   const { articleRef, edit } = props;
 
-  const initialTitle = articleRef.current.title;
+  const id = articleRef.current._id;
 
   const showToast = useToast();
 
-  const saveArticle = async (
-    article: ArticleType,
-    options: { type: "new" | "edit" | "delete" }
-  ) => {
+  const saveArticle = (article: ArticleType, options: { type: "new" | "edit" | "delete" }) => {
     const { type } = options;
-    const v = articleValidator(article, {
-      cond: !(await getTitles())
-        .map((e) => e.title)
-        .filter((e) => e !== initialTitle)
-        .includes(article.title),
-      error_message: `タイトル「${article.title}」の記事が既に存在しています`,
-    });
-    switch (type) {
-      case "new":
-        if (!v.ok) {
-          alert(v.message);
-          return;
+    getTitles()
+      .then((titles) => {
+        return titles.filter((e) => e._id !== id).map((e) => e.title);
+      })
+      .then((disallowedTitles) => {
+        const v = articleValidator(article, {
+          cond: disallowedTitles.includes(article.title),
+          error_message: `title「${article.title}」の記事が既に存在しています`,
+        });
+        switch (type) {
+          case "new":
+            if (!v.ok) {
+              showToast({ text: v.message![0], type: "error" });
+              return;
+            }
+            postArticle(article)
+              .then((response) => {
+                if (response.status === 200) {
+                  location.href = "/";
+                } else {
+                  console.log(response);
+                  showToast({ text: "送信に失敗しました", type: "error" });
+                }
+              })
+              .catch((e) => {
+                console.log(e);
+                showToast({ text: e, type: "error" });
+              });
+            break;
+          case "edit":
+            if (!article._id) {
+              showToast({ text: "記事データにidが存在しません", type: "error" });
+              return;
+            }
+            if (!v.ok) {
+              showToast({ text: v.message![0], type: "error" });
+              return;
+            }
+            updateArticle(article._id, article)
+              .then((response) => {
+                if (response.status === 200) {
+                  showToast({ text: "送信に成功しました", type: "success" });
+                } else {
+                  console.log(response);
+                  showToast({ text: "送信に失敗しました", type: "error" });
+                }
+              })
+              .catch((e) => {
+                console.log(e);
+                showToast({ text: e, type: "error" });
+              });
+            break;
+          case "delete":
+            if (!article._id) {
+              showToast({ text: "記事データにidが存在しません", type: "error" });
+              return;
+            }
+            if (!confirm("記事を削除します。本当によろしいですか？")) return;
+            deleteArticle(article._id)
+              .then((response) => {
+                if (response.status === 200) {
+                  location.href = "/";
+                } else {
+                  console.log(response);
+                  showToast({ text: "送信に失敗しました", type: "error" });
+                }
+              })
+              .catch((e) => {
+                console.log(e);
+                showToast({ text: e, type: "error" });
+              });
+            break;
         }
-        try {
-          await postArticle(article);
-          location.href = "/";
-        } catch (e) {
-          console.log(e);
-          showToast({ text: "送信に失敗しました", type: "error" });
-        }
-        break;
-      case "edit":
-        if (!article._id) return;
-        if (!v.ok) {
-          alert(v.message);
-          return;
-        }
-        try {
-          await updateArticle(article._id, article);
-          showToast({ text: "送信に成功しました", type: "success" });
-        } catch (e) {
-          console.log(e);
-          showToast({ text: "送信に失敗しました", type: "error" });
-        }
-        break;
-      case "delete":
-        if (!article._id) return;
-        if (!confirm("記事を削除します。本当によろしいですか？")) return;
-        try {
-          await deleteArticle(article._id);
-          location.href = "/";
-        } catch (e) {
-          console.log(e);
-          showToast({ text: "送信に失敗しました", type: "error" });
-        }
-        break;
-    }
+      });
   };
 
   // exportコマンド。ArticleTypeでエクスポートする。
@@ -131,6 +159,7 @@ export const HTMLToolbarPlugin: FC<{
   );
 
   // importコマンド。ArticleTypeにおけるcontentのみ、インポートする。
+  // 直接は触らない
   editor.registerCommand(
     IMPORT_COMMAND,
     (defaultContentAsHTML: string) => {
@@ -151,6 +180,8 @@ export const HTMLToolbarPlugin: FC<{
     COMMAND_PRIORITY_EDITOR
   );
 
+  // 最初に記事の内容を読み込む
+  // ほかのカテゴリとかはdefaultValueとして下で読み込んでる
   useEffect(() => {
     editor.dispatchCommand(IMPORT_COMMAND, articleRef.current.content);
   });
