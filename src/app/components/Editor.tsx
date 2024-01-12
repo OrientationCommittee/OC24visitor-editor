@@ -90,7 +90,7 @@ export const Editor: FC<{ initialData?: ArticleType; edit: boolean }> = (props) 
             <HTMLToolbarPlugin articleRef={articleRef} edit={props?.edit} />
           </div>
 
-          <div className="relative p-4 my-0 mx-0 border border-slate-400 min-h-[480px]">
+          <div className="relative p-4 my-0 mx-0 border rounded-lg border-slate-400 min-h-[480px]">
             <RichTextPlugin
               contentEditable={<ContentEditable className="outline-none" />}
               placeholder={
