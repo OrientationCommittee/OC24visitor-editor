@@ -36,7 +36,7 @@ const articleValidator: (
     .filter((e) => e.cond)
     .map((e) => e.error_message)
     .filter((e) => e);
-  return messages
+  return messages.length
     ? {
         ok: false,
         message: messages.join("\n"),
