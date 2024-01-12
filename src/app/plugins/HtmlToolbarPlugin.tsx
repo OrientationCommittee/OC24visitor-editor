@@ -26,7 +26,7 @@ import { useToast } from "./useToast";
 const articleValidator: (
   article: ArticleType,
   ...rest: { cond: boolean; error_message: string }[]
-) => { ok: boolean; message?: string } = (article, ...rest) => {
+) => { ok: boolean; message?: string[] } = (article, ...rest) => {
   //弾く条件と弾く際のメッセージ
   const conditions = [
     { cond: article.title === "", error_message: "titleの値が不正です" },
@@ -39,7 +39,7 @@ const articleValidator: (
   return messages.length
     ? {
         ok: false,
-        message: messages.join("\n"),
+        message: messages,
       }
     : { ok: true }; // エラーメッセージが無い
 };
@@ -73,7 +73,7 @@ export const HTMLToolbarPlugin: FC<{
         switch (type) {
           case "new":
             if (!v.ok) {
-              alert(v.message);
+              showToast({ text: v.message![0], type: "error" });
               return;
             }
             postArticle(article)
@@ -92,11 +92,11 @@ export const HTMLToolbarPlugin: FC<{
             break;
           case "edit":
             if (!article._id) {
-              showToast({ text: "記事データにidが存在しません" });
+              showToast({ text: "記事データにidが存在しません", type: "error" });
               return;
             }
-            if (!v.ok && v.message) {
-              showToast({ text: v.message, type: "error" });
+            if (!v.ok) {
+              showToast({ text: v.message![0], type: "error" });
               return;
             }
             updateArticle(article._id, article)
@@ -114,7 +114,10 @@ export const HTMLToolbarPlugin: FC<{
               });
             break;
           case "delete":
-            if (!article._id) return;
+            if (!article._id) {
+              showToast({ text: "記事データにidが存在しません", type: "error" });
+              return;
+            }
             if (!confirm("記事を削除します。本当によろしいですか？")) return;
             deleteArticle(article._id)
               .then((response) => {
