@@ -1,4 +1,6 @@
-import { FC, useEffect, useRef, useState } from "react";
+"use client";
+
+import { FC, MutableRefObject, useEffect } from "react";
 import {
   $getRoot,
   $insertNodes,
@@ -10,101 +12,127 @@ import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext
 import { $generateHtmlFromNodes } from "@lexical/html";
 import { $generateNodesFromDOM } from "@lexical/html";
 
-import { CiExport, CiImport } from "react-icons/ci";
-import { TbTrashX } from "react-icons/tb";
 import styles from "./CommonToolbar.module.scss";
 
 import getCurrentDate from "../utils/getCurrentDate";
 
 import { categories_jp, MainCategoryType, ArticleType } from "../types";
-import { updateArticle, postArticle, deleteArticle } from "../utils/article";
+import { getTitles, updateArticle, postArticle, deleteArticle } from "../utils/article";
 
-const articleValidator = (
+import { useToast } from "./useToast";
+
+const articleValidator: (
   article: ArticleType,
   ...rest: { cond: boolean; error_message: string }[]
-) => {
+) => { ok: boolean; message?: string[] } = (article, ...rest) => {
+  //弾く条件と弾く際のメッセージ
   const conditions = [
-    { cond: article.title !== "", error_message: "titleの値が不正です" },
-    { cond: article.subCategory !== "", error_message: "subCategoryの値が不正です" },
+    { cond: article.title === "", error_message: "titleの値が不正です" },
+    { cond: article.subCategory === "", error_message: "subCategoryの値が不正です" },
   ];
-  return [...conditions, ...rest].map((e) => e.cond).every((e) => e)
-    ? { ok: true }
-    : {
+  const messages = [...conditions, ...rest]
+    .filter((e) => e.cond)
+    .map((e) => e.error_message)
+    .filter((e) => e);
+  return messages.length
+    ? {
         ok: false,
-        message: [...conditions, ...rest]
-          .filter((e) => !e.cond)
-          .map((e) => e.error_message)
-          .join("\n"),
-      };
+        message: messages,
+      }
+    : { ok: true }; // エラーメッセージが無い
 };
 
 // HTMLToolbarPlugin
 export const HTMLToolbarPlugin: FC<{
-  articleState: ArticleType;
-  updateArticleState: (key: keyof ArticleType, value: any) => void;
+  articleRef: MutableRefObject<ArticleType>;
   edit: boolean;
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }> = (props) => {
   const EXPORT_COMMAND: LexicalCommand<Function> = createCommand();
   const IMPORT_COMMAND: LexicalCommand<string> = createCommand();
   const [editor] = useLexicalComposerContext();
 
-  const { articleState, updateArticleState, edit, setLoading } = props;
+  const { articleRef, edit } = props;
 
-  const subCategoryRef = useRef(articleState.subCategory);
-  const titleRef = useRef(articleState.title);
+  const id = articleRef.current._id;
+
+  const showToast = useToast();
 
   const saveArticle = (article: ArticleType, options: { type: "new" | "edit" | "delete" }) => {
     const { type } = options;
-    const v = articleValidator(article);
-    switch (type) {
-      case "new":
-        if (!v.ok) {
-          alert(v.message);
-          return;
+    getTitles()
+      .then((titles) => {
+        return titles.filter((e) => e._id !== id).map((e) => e.title);
+      })
+      .then((disallowedTitles) => {
+        const v = articleValidator(article, {
+          cond: disallowedTitles.includes(article.title),
+          error_message: `title「${article.title}」の記事が既に存在しています`,
+        });
+        switch (type) {
+          case "new":
+            if (!v.ok) {
+              showToast({ text: v.message![0], type: "error" });
+              return;
+            }
+            postArticle(article)
+              .then((response) => {
+                if (response.status === 200) {
+                  location.href = "/";
+                } else {
+                  console.log(response);
+                  showToast({ text: "送信に失敗しました", type: "error" });
+                }
+              })
+              .catch((e) => {
+                console.log(e);
+                showToast({ text: e, type: "error" });
+              });
+            break;
+          case "edit":
+            if (!article._id) {
+              showToast({ text: "記事データにidが存在しません", type: "error" });
+              return;
+            }
+            if (!v.ok) {
+              showToast({ text: v.message![0], type: "error" });
+              return;
+            }
+            updateArticle(article._id, article)
+              .then((response) => {
+                if (response.status === 200) {
+                  showToast({ text: "送信に成功しました", type: "success" });
+                } else {
+                  console.log(response);
+                  showToast({ text: "送信に失敗しました", type: "error" });
+                }
+              })
+              .catch((e) => {
+                console.log(e);
+                showToast({ text: e, type: "error" });
+              });
+            break;
+          case "delete":
+            if (!article._id) {
+              showToast({ text: "記事データにidが存在しません", type: "error" });
+              return;
+            }
+            if (!confirm("記事を削除します。本当によろしいですか？")) return;
+            deleteArticle(article._id)
+              .then((response) => {
+                if (response.status === 200) {
+                  location.href = "/";
+                } else {
+                  console.log(response);
+                  showToast({ text: "送信に失敗しました", type: "error" });
+                }
+              })
+              .catch((e) => {
+                console.log(e);
+                showToast({ text: e, type: "error" });
+              });
+            break;
         }
-        try {
-          setLoading(true);
-          postArticle(article);
-        } catch (e) {
-          console.log(e);
-        } finally {
-          setLoading(false);
-        }
-        break;
-      case "edit":
-        if (!article._id) return;
-        if (!v.ok) {
-          alert(v.message);
-          return;
-        }
-        try {
-          setLoading(true);
-          updateArticle(article._id, article);
-        } catch (e) {
-          console.log(e);
-        } finally {
-          setLoading(false);
-        }
-        break;
-      case "delete":
-        if (!article._id) return;
-        const tf = confirm("記事を削除します。本当によろしいですか？");
-        if (tf) {
-          deleteArticle(article._id)
-            .then(() => {
-              setLoading(true);
-              location.href = "/";
-            })
-            .catch((e) => {
-              console.log(e);
-            })
-            .finally(() => {
-              setLoading(false);
-            });
-        }
-        break;
-    }
+      });
   };
 
   // exportコマンド。ArticleTypeでエクスポートする。
@@ -117,15 +145,11 @@ export const HTMLToolbarPlugin: FC<{
 
       const contentAsHTML = $generateHtmlFromNodes(editor);
       const curDate = getCurrentDate();
-      const article: ArticleType = {
-        ...articleState,
-        subCategory: subCategoryRef.current,
-        content: contentAsHTML,
-        date: curDate,
-        title: titleRef.current,
-      };
+      articleRef.current.content = contentAsHTML;
+      articleRef.current.date = curDate;
+
       if (exporter) {
-        exporter(article, options);
+        exporter(articleRef.current, options);
       }
       return true;
     },
@@ -133,6 +157,7 @@ export const HTMLToolbarPlugin: FC<{
   );
 
   // importコマンド。ArticleTypeにおけるcontentのみ、インポートする。
+  // 直接は触らない
   editor.registerCommand(
     IMPORT_COMMAND,
     (defaultContentAsHTML: string) => {
@@ -153,13 +178,15 @@ export const HTMLToolbarPlugin: FC<{
     COMMAND_PRIORITY_EDITOR
   );
 
+  // 最初に記事の内容を読み込む
+  // ほかのカテゴリとかはdefaultValueとして下で読み込んでる
   useEffect(() => {
-    editor.dispatchCommand(IMPORT_COMMAND, articleState.content);
+    editor.dispatchCommand(IMPORT_COMMAND, articleRef.current.content);
   });
 
   return (
     <div className={styles.toolbar}>
-      <div className="flex items-center justify-start">
+      <div className="flex items-center justify-start mb-4">
         <div className="mr-4">カテゴリ</div>
 
         {/* カテゴリ欄 */}
@@ -167,9 +194,9 @@ export const HTMLToolbarPlugin: FC<{
           <div className="ml-0 pl-[8px] text-gray border-gray-300 border rounded-l-[6px] after:content-['▼'] after:text-gray-500 after:absolute after:-translate-x-4 after:scale-y-75 after:pointer-events-none">
             <select
               className="w-[165px]"
-              value={articleState.mainCategory}
+              defaultValue={articleRef.current.mainCategory}
               onChange={(e) => {
-                updateArticleState("mainCategory", e.target.value);
+                articleRef.current.mainCategory = e.target.value as MainCategoryType;
               }}
             >
               {...(Object.keys(categories_jp) as MainCategoryType[]).map((mainCategory, index) => {
@@ -184,9 +211,9 @@ export const HTMLToolbarPlugin: FC<{
           <div className="ml-[-1px] py-0 px-[8px] text-gray border-gray-300 border rounded-r-[6px]">
             <input
               placeholder="サブカテゴリを入力"
-              defaultValue={articleState.subCategory}
+              defaultValue={articleRef.current.subCategory}
               onChange={(e) => {
-                subCategoryRef.current = e.target.value;
+                articleRef.current.subCategory = e.target.value;
               }}
             />
           </div>
@@ -198,10 +225,10 @@ export const HTMLToolbarPlugin: FC<{
           <label>
             <input
               type="checkbox"
-              checked={articleState.shown}
+              defaultChecked={articleRef.current.shown}
               className="peer sr-only"
               onChange={(e) => {
-                updateArticleState("shown", e.target.checked);
+                articleRef.current.shown = e.target.checked;
               }}
             />
             <span className="block w-[2em] cursor-pointer bg-gray-500 rounded-full p-[1px] after:block after:h-[1em] after:w-[1em] after:rounded-full after:bg-white after:transition peer-checked:bg-green-500 peer-checked:after:translate-x-[calc(100%-2px)]"></span>
@@ -216,9 +243,9 @@ export const HTMLToolbarPlugin: FC<{
           <input
             className="w-full"
             placeholder="タイトルを入力"
-            defaultValue={articleState.title}
+            defaultValue={articleRef.current.title}
             onChange={(e) => {
-              titleRef.current = e.target.value;
+              articleRef.current.title = e.target.value;
             }}
           />
         </div>
@@ -227,26 +254,28 @@ export const HTMLToolbarPlugin: FC<{
           <button
             type="button"
             title="export"
+            className="bg-green-600 text-white text-xs py-2 px-6 rounded text-center"
             onClick={() => {
               editor.dispatchCommand(EXPORT_COMMAND, () => {
                 return { exporter: saveArticle, options: { type: edit ? "edit" : "new" } };
               });
             }}
           >
-            <CiExport size={24} />
+            更新
           </button>
         </div>
         {edit ? (
           <>
             <button
               type="button"
+              className="bg-red-500 text-white text-xs py-2 px-6 rounded text-center ml-2"
               onClick={() => {
                 editor.dispatchCommand(EXPORT_COMMAND, () => {
                   return { exporter: saveArticle, options: { type: "delete" } };
                 });
               }}
             >
-              <TbTrashX size={24} />
+              削除
             </button>
           </>
         ) : (

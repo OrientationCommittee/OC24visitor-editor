@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, ComponentProps, useState, useEffect } from "react";
+import { FC, ComponentProps, useState, useEffect, useRef } from "react";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
@@ -24,6 +24,8 @@ import { LinkPlugin } from "../plugins/LinkPlugin";
 import LexicalClickableLinkPlugin from "@lexical/react/LexicalClickableLinkPlugin";
 import { HTMLToolbarPlugin } from "../plugins/HtmlToolbarPlugin";
 
+import { ToastProvider } from "../plugins/useToast";
+
 import type { ArticleType } from "../types";
 
 const initialConfig: ComponentProps<typeof LexicalComposer>["initialConfig"] = {
@@ -43,11 +45,8 @@ export const Editor: FC<{ initialData?: ArticleType; edit: boolean }> = (props) 
     content: props?.initialData?.content ?? "",
     shown: props?.initialData?.shown ?? false,
   };
-  const [articleState, setArticleState] = useState<ArticleType>(initialData);
-  const updateArticleState = (key: keyof ArticleType, value: any) =>
-    setArticleState((article: Readonly<ArticleType>) => {
-      return { ...article, [key]: value };
-    });
+
+  const articleRef = useRef<ArticleType>(initialData);
 
   const [loading, setLoading] = useState<boolean>(true);
   useEffect(() => {
@@ -65,47 +64,55 @@ export const Editor: FC<{ initialData?: ArticleType; edit: boolean }> = (props) 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-[60vh]">
-        <h1 className="text-center items-middle">Loading...</h1>
+        <button type="button" className="flex items-center bg-gray-200 h-[48px] p-3">
+          <svg
+            className="animate-slowspin fill-none stroke-sky-500 stroke-[10px]"
+            width="32"
+            height="32"
+            strokeDasharray="14"
+            viewBox="0 0 100 100"
+          >
+            <circle cx="50" cy="50" r="40" />
+          </svg>
+          <span className="text-center items-middle px-4 text-xl font-medium">Loading...</span>
+        </button>
       </div>
     );
   } else {
     return (
-      <LexicalComposer initialConfig={initialConfig}>
-        <div className="flex justify-between items-start">
-          <div>
-            <ToolbarPlugin />
-            <InlineToolbarPlugin />
+      <ToastProvider>
+        <LexicalComposer initialConfig={initialConfig}>
+          <div className="flex justify-between items-start">
+            <div>
+              <ToolbarPlugin />
+              <InlineToolbarPlugin />
+            </div>
+            <HTMLToolbarPlugin articleRef={articleRef} edit={props?.edit} />
           </div>
-          <HTMLToolbarPlugin
-            articleState={articleState}
-            updateArticleState={updateArticleState}
-            edit={props?.edit}
-            setLoading={setLoading}
-          />
-        </div>
 
-        <div className="relative p-4 my-0 mx-0 border border-slate-400 min-h-[480px]">
-          <RichTextPlugin
-            contentEditable={<ContentEditable className="outline-none" />}
-            placeholder={
-              <div className="absolute text-gray-500 pointer-events-none select-none top-4 left-4">
-                記事を作成
-              </div>
-            }
-            ErrorBoundary={LexicalErrorBoundary}
-          />
-        </div>
+          <div className="relative p-4 my-0 mx-0 border rounded-lg border-slate-400 min-h-[480px]">
+            <RichTextPlugin
+              contentEditable={<ContentEditable className="outline-none" />}
+              placeholder={
+                <div className="absolute text-gray-500 pointer-events-none select-none top-4 left-4">
+                  記事を作成
+                </div>
+              }
+              ErrorBoundary={LexicalErrorBoundary}
+            />
+          </div>
 
-        <AutoFocusPlugin />
-        <HistoryPlugin />
-        <ListPlugin />
-        <CheckListPlugin />
-        <TabIndentationPlugin />
-        <ListMaxIndentLevelPlugin maxDepth={5} />
-        <MarkdownPlugin />
-        <LinkPlugin />
-        <LexicalClickableLinkPlugin />
-      </LexicalComposer>
+          <AutoFocusPlugin />
+          <HistoryPlugin />
+          <ListPlugin />
+          <CheckListPlugin />
+          <TabIndentationPlugin />
+          <ListMaxIndentLevelPlugin maxDepth={5} />
+          <MarkdownPlugin />
+          <LinkPlugin />
+          <LexicalClickableLinkPlugin />
+        </LexicalComposer>
+      </ToastProvider>
     );
   }
 };
