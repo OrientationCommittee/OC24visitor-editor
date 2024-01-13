@@ -44,23 +44,40 @@ export const Editor: FC<{ initialData?: ArticleType; edit: boolean }> = (props) 
     content: props?.initialData?.content ?? "",
     shown: props?.initialData?.shown ?? false,
   };
-
   const articleRef = useRef<ArticleType>(initialData);
 
-  const [loading, setLoading] = useState<boolean>(true);
-  useEffect(() => {
-    setLoading(false);
-  }, []);
+  const Tools: FC = () => {
+    return (
+      <div className="flex justify-between items-start">
+        <div>
+          <ToolbarPlugin />
+          <InlineToolbarPlugin />
+        </div>
+        <HTMLToolbarPlugin articleRef={articleRef} edit={props?.edit} />
+      </div>
+    );
+  };
 
-  useEffect(() => {
-    if (!loading) {
-      setTimeout(() => {
-        window.scrollTo(0, 0);
-      });
-    }
-  }, [loading]);
+  const Content: FC = () => {
+    return (
+      <div
+        id="content"
+        className="relative py-2 my-0 mx-0 border rounded-lg border-slate-400 min-h-[480px]"
+      >
+        <RichTextPlugin
+          contentEditable={<ContentEditable className="outline-none" />}
+          placeholder={
+            <div className="absolute text-gray-500 pointer-events-none select-none top-4 left-4">
+              記事を作成
+            </div>
+          }
+          ErrorBoundary={LexicalErrorBoundary}
+        />
+      </div>
+    );
+  };
 
-  if (loading) {
+  const Loading: FC = () => {
     return (
       <div className="flex justify-center items-center h-[60vh]">
         <button type="button" className="flex items-center bg-gray-200 h-[48px] p-3">
@@ -77,33 +94,27 @@ export const Editor: FC<{ initialData?: ArticleType; edit: boolean }> = (props) 
         </button>
       </div>
     );
+  };
+
+  const [loading, setLoading] = useState<boolean>(true);
+  useEffect(() => setLoading(false), []);
+
+  useEffect(() => {
+    if (!loading) {
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+      });
+    }
+  }, [loading]);
+
+  if (loading) {
+    return <Loading />;
   } else {
     return (
       <ToastProvider>
         <LexicalComposer initialConfig={initialConfig}>
-          <div className="flex justify-between items-start">
-            <div>
-              <ToolbarPlugin />
-              <InlineToolbarPlugin />
-            </div>
-            <HTMLToolbarPlugin articleRef={articleRef} edit={props?.edit} />
-          </div>
-
-          <div
-            id="content"
-            className="relative py-2 my-0 mx-0 border rounded-lg border-slate-400 min-h-[480px]"
-          >
-            <RichTextPlugin
-              contentEditable={<ContentEditable className="outline-none" />}
-              placeholder={
-                <div className="absolute text-gray-500 pointer-events-none select-none top-4 left-4">
-                  記事を作成
-                </div>
-              }
-              ErrorBoundary={LexicalErrorBoundary}
-            />
-          </div>
-
+          <Tools />
+          <Content />
           <AutoFocusPlugin />
           <HistoryPlugin />
           <ListPlugin />
