@@ -23,7 +23,6 @@ import { MarkdownPlugin } from "../plugins/MarkdownPlugin";
 import { LinkPlugin } from "../plugins/LinkPlugin";
 import LexicalClickableLinkPlugin from "@lexical/react/LexicalClickableLinkPlugin";
 import { HTMLToolbarPlugin } from "../plugins/HtmlToolbarPlugin";
-
 import { ToastProvider } from "../plugins/useToast";
 
 import type { ArticleType } from "../types";
@@ -90,7 +89,10 @@ export const Editor: FC<{ initialData?: ArticleType; edit: boolean }> = (props) 
             <HTMLToolbarPlugin articleRef={articleRef} edit={props?.edit} />
           </div>
 
-          <div className="relative p-4 my-0 mx-0 border rounded-lg border-slate-400 min-h-[480px]">
+          <div
+            id="content"
+            className="relative py-2 my-0 mx-0 border rounded-lg border-slate-400 min-h-[480px]"
+          >
             <RichTextPlugin
               contentEditable={<ContentEditable className="outline-none" />}
               placeholder={

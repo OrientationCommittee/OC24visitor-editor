@@ -1,3 +1,116 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+$text_black: #141414;
+$gray: #707070;
+$light_gray: #a0a0a0;
+$cherryblossom: rgba(255, 192, 203);
+$dark_cherry: rgb(225, 153, 165);
+
+#content {
+  ::selection {
+    background: #ffbee08b;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  a,
+  div,
+  ul,
+  ol,
+  li,
+  img {
+    font-family: "fot-tsukuardgothic-std", sans-serif;
+    color: $text_black;
+  }
+
+  h1 {
+    width: max-content;
+    padding: 2px 18px;
+    font-weight: 700;
+    border: none;
+
+    font-size: 27px;
+    margin: 2vw auto;
+    &::after {
+      content: "";
+      display: block;
+      width: calc(100% + 36px);
+      transform: translate(-18px, 0);
+      border: 1.5px solid #000000;
+      border-radius: 1.5px;
+    }
+  }
+
+  h2 {
+    display: flex;
+    margin-top: 7vh;
+    padding-left: 7vw;
+
+    font-weight: 700;
+
+    font-size: 24px;
+    line-height: 48px;
+
+    &::before {
+      content: "";
+      display: block;
+      width: 18px;
+      height: 18px;
+      border: 4px solid $gray;
+      border-radius: 4px;
+      box-sizing: border-box;
+      transform: rotate(135deg);
+      margin-top: 15px;
+      margin-right: 15px;
+    }
+  }
+
+  h3 {
+    display: flex;
+    padding-left: 8vw;
+
+    font-weight: 400;
+    margin-top: 7vh;
+    font-size: 18px;
+
+    &::before {
+      content: "";
+      background-image: url("../assets/images/cherry.svg");
+      margin-right: 5px;
+      width: 25px;
+      height: 25px;
+    }
+  }
+
+  h4,
+  ol,
+  ul,
+  li,
+  img,
+  p {
+    font-weight: 400;
+    display: block;
+    margin: 0;
+
+    padding-left: 9vw;
+    padding-right: 9vw;
+    font-size: 16px;
+  }
+
+  li {
+    padding-left: 0;
+  }
+
+  a {
+    text-decoration: underline;
+    color: $dark_cherry;
+    &:hover {
+      color: $cherryblossom;
+    }
+  }
+}
