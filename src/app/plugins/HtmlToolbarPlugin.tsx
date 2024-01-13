@@ -52,6 +52,8 @@ export const HTMLToolbarPlugin: FC<{
   const [editor] = useLexicalComposerContext();
 
   const { articleRef, edit } = props;
+  // articleの初期値をinitialDataとして取っておく
+  const initialData = JSON.parse(JSON.stringify(articleRef.current));
 
   const id = articleRef.current._id;
 
@@ -101,6 +103,9 @@ export const HTMLToolbarPlugin: FC<{
               .then((response) => {
                 if (response.status === 200) {
                   showToast({ text: "送信に成功しました", type: "success" });
+                  if (article.title !== initialData.title) {
+                    location.href = `/24/editor/${article.title}/edit`;
+                  }
                 } else {
                   console.log(response);
                   showToast({ text: "送信に失敗しました", type: "error" });
