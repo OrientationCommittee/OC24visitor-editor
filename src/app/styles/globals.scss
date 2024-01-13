@@ -16,4 +16,82 @@
   img {
     font-family: "fot-tsukuardgothic-std", sans-serif;
   }
+  h1 {
+    width: max-content;
+    padding: 2px 18px;
+    border-bottom: 1px solid #000000;
+
+    font-weight: 700;
+
+    font-size: 27px;
+    margin: 2vw auto;
+  }
+
+  h2 {
+    display: flex;
+    margin-top: 7vh;
+    padding-left: 7vw;
+
+    font-weight: 700;
+
+    font-size: 21px;
+
+    &::before {
+      content: "";
+      display: block;
+      border: 3px solid #707070;
+      box-sizing: border-box;
+      transform: rotate(135deg);
+
+      width: 14px;
+      height: 14px;
+      margin-top: 9px;
+      margin-right: 15px;
+    }
+  }
+
+  h3 {
+    display: flex;
+    margin-top: 7vh;
+    padding-left: 8vw;
+
+    font-weight: 400;
+
+    &::before {
+      content: "";
+      background-image: url("../assets/images/cherry.svg");
+      margin-right: 5px;
+
+      width: 25px;
+      height: 25px;
+    }
+  }
+
+  h4,
+  ol,
+  ul,
+  li,
+  img,
+  p {
+    font-weight: 400;
+    display: block;
+    margin: 0;
+
+    padding-left: 9vw;
+    padding-right: 9vw;
+  }
+
+  li {
+    padding-left: 0;
+  }
+
+  img {
+    width: 25vw;
+  }
+  a {
+    color: #c26896;
+    &:hover {
+      color: #ed3cc7;
+    }
+  }
 }
