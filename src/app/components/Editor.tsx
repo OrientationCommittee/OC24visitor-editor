@@ -91,7 +91,7 @@ export const Editor: FC<{ initialData?: ArticleType; edit: boolean }> = (props) 
 
           <div
             id="content"
-            className="relative p-4 my-0 mx-0 border rounded-lg border-slate-400 min-h-[480px]"
+            className="relative py-2 my-0 mx-0 border rounded-lg border-slate-400 min-h-[480px]"
           >
             <RichTextPlugin
               contentEditable={<ContentEditable className="outline-none" />}
