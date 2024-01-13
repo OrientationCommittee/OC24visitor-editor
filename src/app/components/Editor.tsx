@@ -5,8 +5,10 @@ import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
-import { CheckListPlugin } from "@lexical/react/LexicalCheckListPlugin";
 import { TabIndentationPlugin } from "@lexical/react/LexicalTabIndentationPlugin";
+import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
+import { ListMaxIndentLevelPlugin } from "../plugins/ListMaxIndentLevelPlugin";
+import LexicalClickableLinkPlugin from "@lexical/react/LexicalClickableLinkPlugin";
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
 
 import "ress";
@@ -16,13 +18,10 @@ import { theme } from "../theme";
 
 import { AutoFocusPlugin } from "../plugins/AutoFocusPlugin";
 import { ToolbarPlugin } from "../plugins/ToolbarPlugin";
-import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { InlineToolbarPlugin } from "../plugins/InlineToolbarPlugin";
-import { ListMaxIndentLevelPlugin } from "../plugins/ListMaxIndentLevelPlugin";
-import { MarkdownPlugin } from "../plugins/MarkdownPlugin";
-import { LinkPlugin } from "../plugins/LinkPlugin";
-import LexicalClickableLinkPlugin from "@lexical/react/LexicalClickableLinkPlugin";
 import { HTMLToolbarPlugin } from "../plugins/HtmlToolbarPlugin";
+import { LinkPlugin } from "../plugins/LinkPlugin";
+import { MarkdownPlugin } from "../plugins/MarkdownPlugin";
 import { ToastProvider } from "../plugins/useToast";
 
 import type { ArticleType } from "../types";
@@ -118,7 +117,6 @@ export const Editor: FC<{ initialData?: ArticleType; edit: boolean }> = (props) 
           <AutoFocusPlugin />
           <HistoryPlugin />
           <ListPlugin />
-          <CheckListPlugin />
           <TabIndentationPlugin />
           <ListMaxIndentLevelPlugin maxDepth={5} />
           <MarkdownPlugin />
