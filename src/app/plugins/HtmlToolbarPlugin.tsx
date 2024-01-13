@@ -12,8 +12,6 @@ import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext
 import { $generateHtmlFromNodes } from "@lexical/html";
 import { $generateNodesFromDOM } from "@lexical/html";
 
-import { CiExport } from "react-icons/ci";
-import { TbTrashX } from "react-icons/tb";
 import styles from "./CommonToolbar.module.scss";
 
 import getCurrentDate from "../utils/getCurrentDate";
@@ -188,7 +186,7 @@ export const HTMLToolbarPlugin: FC<{
 
   return (
     <div className={styles.toolbar}>
-      <div className="flex items-center justify-start">
+      <div className="flex items-center justify-start mb-4">
         <div className="mr-4">カテゴリ</div>
 
         {/* カテゴリ欄 */}
@@ -256,26 +254,28 @@ export const HTMLToolbarPlugin: FC<{
           <button
             type="button"
             title="export"
+            className="bg-green-600 text-white text-xs py-2 px-6 rounded text-center"
             onClick={() => {
               editor.dispatchCommand(EXPORT_COMMAND, () => {
                 return { exporter: saveArticle, options: { type: edit ? "edit" : "new" } };
               });
             }}
           >
-            <CiExport size={24} />
+            更新
           </button>
         </div>
         {edit ? (
           <>
             <button
               type="button"
+              className="bg-red-500 text-white text-xs py-2 px-6 rounded text-center ml-2"
               onClick={() => {
                 editor.dispatchCommand(EXPORT_COMMAND, () => {
                   return { exporter: saveArticle, options: { type: "delete" } };
                 });
               }}
             >
-              <TbTrashX size={24} />
+              削除
             </button>
           </>
         ) : (
