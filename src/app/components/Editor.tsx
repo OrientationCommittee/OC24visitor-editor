@@ -26,7 +26,6 @@ import { HTMLToolbarPlugin } from "../plugins/HtmlToolbarPlugin";
 import { ToastProvider } from "../plugins/useToast";
 
 import type { ArticleType } from "../types";
-import styles from "./Editor.module.scss";
 
 const initialConfig: ComponentProps<typeof LexicalComposer>["initialConfig"] = {
   namespace: "MyEditor",
