@@ -1,6 +1,7 @@
 // server-side
 import { FC } from "react";
 import { getArticleByTitle } from "../../utils/article";
+import Link from "next/link";
 
 export const ArticleDataProvider: FC<{ title: string; Editor: any }> = async (props) => {
   const title = decodeURI(props.title);
@@ -18,9 +19,9 @@ export const ArticleDataProvider: FC<{ title: string; Editor: any }> = async (pr
       <div className="flex flex-col justify-center items-center h-[60vh]">
         <h2>タイトル「{title}」の記事は存在しません。正しいURLか確認してください。</h2>
         <br></br>
-        <a href="/" className="underline text-neutral-500">
+        <Link href="/" className="underline text-neutral-500">
           トップへ戻る
-        </a>
+        </Link>
       </div>
     );
   }
