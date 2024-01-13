@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+#content {
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  a,
+  div,
+  ul,
+  ol,
+  li,
+  img {
+    font-family: "fot-tsukuardgothic-std", sans-serif;
+  }
+}
