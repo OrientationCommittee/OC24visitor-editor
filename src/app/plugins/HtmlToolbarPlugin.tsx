@@ -1,6 +1,7 @@
 "use client";
 
 import { FC, MutableRefObject, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   $getRoot,
   $insertNodes,
@@ -54,9 +55,9 @@ export const HTMLToolbarPlugin: FC<{
   const { articleRef, edit } = props;
   // articleの初期値をinitialDataとして取っておく
   const initialData = JSON.parse(JSON.stringify(articleRef.current));
-
   const id = articleRef.current._id;
 
+  const router = useRouter();
   const showToast = useToast();
 
   const saveArticle = (article: ArticleType, options: { type: "new" | "edit" | "delete" }) => {
@@ -79,7 +80,7 @@ export const HTMLToolbarPlugin: FC<{
             postArticle(article)
               .then((response) => {
                 if (response.status === 200) {
-                  location.href = "/";
+                  router.push("/");
                 } else {
                   console.log(response);
                   showToast({ text: "送信に失敗しました", type: "error" });
@@ -104,7 +105,7 @@ export const HTMLToolbarPlugin: FC<{
                 if (response.status === 200) {
                   showToast({ text: "送信に成功しました", type: "success" });
                   if (article.title !== initialData.title) {
-                    location.href = `/24/editor/${article.title}/edit`;
+                    router.push(`/${article.title}/edit`);
                   }
                 } else {
                   console.log(response);
@@ -125,7 +126,7 @@ export const HTMLToolbarPlugin: FC<{
             deleteArticle(article._id)
               .then((response) => {
                 if (response.status === 200) {
-                  location.href = "/";
+                  router.push("/");
                 } else {
                   console.log(response);
                   showToast({ text: "送信に失敗しました", type: "error" });

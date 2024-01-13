@@ -35,7 +35,7 @@ const initialConfig: ComponentProps<typeof LexicalComposer>["initialConfig"] = {
   onError: (error) => console.error(error),
 };
 
-export const Editor: FC<{ title: string; initialData?: ArticleType; edit: boolean }> = (props) => {
+export const Editor: FC<{ initialData?: ArticleType; edit: boolean }> = (props) => {
   const initialData: ArticleType = {
     _id: props?.initialData?._id ?? undefined,
     title: props?.initialData?.title ?? "",
