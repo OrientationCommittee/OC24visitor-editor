@@ -100,10 +100,22 @@ $dark_cherry: rgb(225, 153, 165);
     padding-left: 9vw;
     padding-right: 9vw;
     font-size: 16px;
+    line-height: 32px;
   }
 
   li {
-    padding-left: 0;
+    padding-left: 10px;
+    &::before {
+      content: "";
+      display: inline-block;
+      width: 4px;
+      height: 4px;
+      background-color: $dark_cherry;
+      transform: translateY(-4px);
+      border-radius: 5px;
+      margin-right: 10px;
+      margin-top: 0;
+    }
   }
 
   a {
