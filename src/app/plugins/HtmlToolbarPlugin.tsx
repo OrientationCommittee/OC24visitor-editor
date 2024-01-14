@@ -51,20 +51,17 @@ export const HTMLToolbarPlugin: FC<{
   const sendArticle = (options: { type: "new" | "edit" | "delete" }) => {
     const editorState = editor.getEditorState();
     editorState.read(() => {
-      const contentAsHTML = $generateHtmlFromNodes(editor);
-      const curDate = getCurrentDate();
-      curArticle.content = contentAsHTML;
-      curArticle.date = curDate;
+      curArticle.content = $generateHtmlFromNodes(editor); //contentAsHTML
+      curArticle.date = getCurrentDate();
 
-      const article = curArticle;
       getTitles()
         .then((titles) => {
           return titles.filter((e) => e._id !== initialData._id).map((e) => e.title);
         })
         .then((disallowedTitles) => {
-          const v = articleValidator(article, {
-            cond: disallowedTitles.includes(article.title),
-            error_message: `title「${article.title}」の記事が既に存在しています`,
+          const v = articleValidator(curArticle, {
+            cond: disallowedTitles.includes(curArticle.title),
+            error_message: `title「${curArticle.title}」の記事が既に存在しています`,
           });
           switch (options.type) {
             case "new":
@@ -72,12 +69,12 @@ export const HTMLToolbarPlugin: FC<{
                 showToast({ text: v.message![0], type: "error" });
                 return;
               }
-              postArticle(article)
+              postArticle(curArticle)
                 .then((response) => {
                   if (response.status === 200) {
                     router.push("/");
                   } else {
-                    console.log(response.json());
+                    console.log(response);
                     showToast({ text: "送信に失敗しました", type: "error" });
                   }
                 })
@@ -87,7 +84,7 @@ export const HTMLToolbarPlugin: FC<{
                 });
               break;
             case "edit":
-              if (!article._id) {
+              if (!curArticle._id) {
                 showToast({ text: "記事データにidが存在しません", type: "error" });
                 return;
               }
@@ -95,12 +92,12 @@ export const HTMLToolbarPlugin: FC<{
                 showToast({ text: v.message![0], type: "error" });
                 return;
               }
-              updateArticle(article._id, article)
+              updateArticle(curArticle._id, curArticle)
                 .then((response) => {
                   if (response.status === 200) {
                     showToast({ text: "送信に成功しました", type: "success" });
-                    if (article.title !== initialData.title) {
-                      router.push(`/${article.title}/edit`);
+                    if (curArticle.title !== initialData.title) {
+                      router.push(`/${curArticle.title}/edit`);
                     }
                   } else {
                     console.log(response);
@@ -113,12 +110,12 @@ export const HTMLToolbarPlugin: FC<{
                 });
               break;
             case "delete":
-              if (!article._id) {
+              if (!curArticle._id) {
                 showToast({ text: "記事データにidが存在しません", type: "error" });
                 return;
               }
               if (!confirm("記事を削除します。本当によろしいですか？")) return;
-              deleteArticle(article._id)
+              deleteArticle(curArticle._id)
                 .then((response) => {
                   if (response.status === 200) {
                     router.push("/");
@@ -159,9 +156,7 @@ export const HTMLToolbarPlugin: FC<{
             <select
               className="w-[165px]"
               defaultValue={curArticle.mainCategory}
-              onChange={(e) => {
-                curArticle.mainCategory = e.target.value as MainCategoryType;
-              }}
+              onChange={(e) => (curArticle.mainCategory = e.target.value as MainCategoryType)}
             >
               {...(Object.keys(categories_jp) as MainCategoryType[]).map((mainCategory, index) => {
                 return (
@@ -217,7 +212,7 @@ export const HTMLToolbarPlugin: FC<{
             更新
           </button>
         </div>
-        {edit ? (
+        {edit && (
           <>
             <button
               type="button"
@@ -228,8 +223,6 @@ export const HTMLToolbarPlugin: FC<{
               削除
             </button>
           </>
-        ) : (
-          ""
         )}
       </div>
     </div>
