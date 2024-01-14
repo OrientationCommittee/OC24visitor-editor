@@ -1,5 +1,5 @@
 //現在の日付を取得
-const getCurrentDate = () => {
+export const getCurrentDate = () => {
   const today = new Date();
   const year = today.getFullYear();
   const month = ("0" + (today.getMonth() + 1)).slice(-2);
@@ -8,5 +8,3 @@ const getCurrentDate = () => {
   return year + "-" + month + "-" + day + " ";
 };
 //返り値 : 2023-01-02 (String型)
-
-export default getCurrentDate;
