@@ -6,38 +6,27 @@ import {
   MdFormatUnderlined,
   MdFormatStrikethrough,
   MdFormatItalic,
-  MdCode,
-  MdSubscript,
-  MdSuperscript,
 } from "node_modules/react-icons/md";
 
 import styles from "./CommonToolbar.module.scss";
 
 export const InlineToolbarPlugin: FC = () => {
   const [editor] = useLexicalComposerContext();
-
   const [isBold, setIsBold] = useState(false);
   const [isUnderline, setIsUnderline] = useState(false);
   const [isStrikethrough, setIsStrikethrough] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
-  const [isCode, setIsCode] = useState(false);
-  const [isSubscript, setIsSubscript] = useState(false);
-  const [isSuperscript, setIsSuperscript] = useState(false);
 
   useEffect(() => {
     editor.registerUpdateListener(({ editorState }) => {
       editorState.read(() => {
         const selection = $getSelection();
-
         if (!$isRangeSelection(selection)) return;
 
         setIsBold(selection.hasFormat("bold"));
         setIsUnderline(selection.hasFormat("underline"));
         setIsStrikethrough(selection.hasFormat("strikethrough"));
         setIsItalic(selection.hasFormat("italic"));
-        setIsCode(selection.hasFormat("code"));
-        setIsSubscript(selection.hasFormat("subscript"));
-        setIsSuperscript(selection.hasFormat("superscript"));
       });
     });
   }, [editor]);
@@ -46,6 +35,7 @@ export const InlineToolbarPlugin: FC = () => {
     <div className={styles.toolbar}>
       <button
         type="button"
+        title="bold"
         aria-label="format bold"
         role="checkbox"
         aria-checked={isBold}
@@ -55,6 +45,7 @@ export const InlineToolbarPlugin: FC = () => {
       </button>
       <button
         type="button"
+        title="underline"
         aria-label="format underline"
         role="checkbox"
         aria-checked={isUnderline}
@@ -64,6 +55,7 @@ export const InlineToolbarPlugin: FC = () => {
       </button>
       <button
         type="button"
+        title="strikethrough"
         aria-label="format strikethrough"
         role="checkbox"
         aria-checked={isStrikethrough}
@@ -73,6 +65,7 @@ export const InlineToolbarPlugin: FC = () => {
       </button>
       <button
         type="button"
+        title="italic"
         aria-label="format italic"
         role="checkbox"
         aria-checked={isItalic}
@@ -80,30 +73,6 @@ export const InlineToolbarPlugin: FC = () => {
       >
         <MdFormatItalic size={24} />
       </button>
-      {/* <button
-        type="button"
-        aria-label="format code"
-        role="checkbox"
-        aria-checked={isCode}
-        onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, "code")}>
-        <MdCode size={24}/>
-      </button>
-      <button
-        type="button"
-        aria-label="format subscript"
-        role="checkbox"
-        aria-checked={isSubscript}
-        onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, "subscript")}>
-        <MdSubscript size={24}/>
-      </button>
-      <button
-        type="button"
-        aria-label="format superscript"
-        role="checkbox"
-        aria-checked={isSuperscript}
-        onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, "superscript")}>
-        <MdSuperscript size={24}/>
-      </button> */}
     </div>
   );
 };
