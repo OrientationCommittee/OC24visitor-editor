@@ -83,16 +83,21 @@ export async function getTitles(): Promise<ArticleTitleType[]> {
 //便利系.引数には上記関数で得た記事を入れる.
 //記事のmainCategory別subCategory一覧を取得する関数.
 export function getSubCategories(articles: ArticleType[]): Record<string, string[]> {
-  const subCategories: Record<MainCategoryType, string[]> = {
-    fresher: [],
-    oriter: [],
-    circle: [],
-    committee: [],
+  /**
+   * todo: あとで修正する.
+   */
+  const subCategories: Record<MainCategoryType, Set<string>> = {
+    fresher: new Set([]),
+    oriter: new Set([]),
+    circle: new Set([]),
+    committee: new Set([]),
   };
   articles.forEach((article) => {
-    subCategories[article.mainCategory].push(article.subCategory);
+    subCategories[article.mainCategory].add(article.subCategory);
   });
-  return subCategories;
+  return Object.fromEntries(
+    Object.entries(subCategories).map(([key, value]) => [key, Array.from(value)])
+  );
 }
 
 //getTitlesからtitleの配列を抽出する関数.
