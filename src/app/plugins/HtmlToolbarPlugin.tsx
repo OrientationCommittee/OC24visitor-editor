@@ -239,7 +239,6 @@ export const HTMLToolbarPlugin: FC<{
                   placeholder="新規サブカテゴリ"
                   onChange={(e) => {
                     curArticle.subCategory = e.target.value;
-                    setCurrentSubCategory(e.target.value);
                   }}
                 />
                 {subCategories[currentMainCategory].length > 0 && (
