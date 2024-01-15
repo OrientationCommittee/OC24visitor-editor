@@ -212,29 +212,31 @@ export const HTMLToolbarPlugin: FC<{
             </select>
           </div>
           {/* subカテゴリの選択 */}
-          <div className="ml-[-1px] py-0 px-[8px] text-gray border-gray-300 border rounded-r-[6px] min-w-[125px]">
+          <div className="w-[200px] ml-[-1px] py-0 px-[8px] text-gray border-gray-300 border rounded-r-[6px] min-w-[125px]">
             {currentSubCategory !== "new" ? (
-              <select
-                className="w-full"
-                value={currentSubCategory}
-                onChange={(e) => {
-                  curArticle.subCategory = e.target.value;
-                  setCurrentSubCategory(e.target.value);
-                }}
-              >
-                {subCategories[currentMainCategory]?.map((subCategory, index) => (
-                  <option key={index} value={subCategory}>
-                    {subCategory}
-                  </option>
-                ))}
-                <option value="new">新規作成</option>
-              </select>
+              <div className="w-full after:content-['▼'] after:text-gray-500 after:absolute after:-translate-x-2 after:scale-y-75 after:pointer-events-none">
+                <select
+                  className="w-full"
+                  value={currentSubCategory}
+                  onChange={(e) => {
+                    curArticle.subCategory = e.target.value;
+                    setCurrentSubCategory(e.target.value);
+                  }}
+                >
+                  {subCategories[currentMainCategory]?.map((subCategory, index) => (
+                    <option key={index} value={subCategory}>
+                      {subCategory}
+                    </option>
+                  ))}
+                  <option value="new">新規作成...</option>
+                </select>
+              </div>
             ) : (
               <div className="flex">
                 <input
-                  className="max-w-[115px]" // todo: 要修正
+                  className="max-w-[160px]" // todo: 要修正
                   type="text"
-                  placeholder="新しいサブカテゴリ"
+                  placeholder="新規サブカテゴリ"
                   onChange={(e) => {
                     curArticle.subCategory = e.target.value;
                     setCurrentSubCategory(e.target.value);
@@ -242,10 +244,12 @@ export const HTMLToolbarPlugin: FC<{
                 />
                 {subCategories[currentMainCategory].length > 0 && (
                   <button
-                    className="ml-2"
+                    className="w-full h-full"
                     onClick={() => setCurrentSubCategory(subCategories[currentMainCategory][0])} // キャンセルボタンを押したときに実行
                   >
-                    × {/* todo: 後で修正 */}
+                    <span
+                      className={`${styles.close} before:bg-gray-500 after:bg-gray-500 ml-2 w-2em h-full relative`}
+                    />
                   </button>
                 )}
               </div>
