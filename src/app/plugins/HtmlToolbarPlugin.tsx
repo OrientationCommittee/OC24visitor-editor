@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, MutableRefObject, useEffect } from "react";
+import { FC, MutableRefObject, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { $getRoot, $insertNodes } from "lexical";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
@@ -10,7 +10,14 @@ import styles from "./CommonToolbar.module.scss";
 
 import { categories_jp, MainCategoryType, ArticleType } from "../types";
 import { getCurrentDate } from "../utils/getCurrentDate";
-import { getTitles, updateArticle, postArticle, deleteArticle } from "../utils/article";
+import {
+  getTitles,
+  updateArticle,
+  postArticle,
+  deleteArticle,
+  getArticles,
+  getSubCategories,
+} from "../utils/article";
 
 import { useToast } from "./useToast";
 
@@ -42,7 +49,18 @@ export const HTMLToolbarPlugin: FC<{
 }> = (props) => {
   const { articleRef, edit } = props;
   const curArticle = articleRef.current;
+
   const initialData = JSON.parse(JSON.stringify(curArticle)); //初期値を取っておく
+  const [subCategories, setSubCategories] = useState<Record<MainCategoryType, string[]>>(
+    Object.keys(categories_jp).reduce((acc, cur) => ({ ...acc, [cur]: [] }), {}) as Record<
+      MainCategoryType,
+      string[]
+    >
+  );
+  const [currentMainCategory, setCurrentMainCategory] = useState<MainCategoryType>(
+    curArticle.mainCategory
+  );
+  const [currentSubCategory, setCurrentSubCategory] = useState<string>(curArticle.subCategory);
 
   const [editor] = useLexicalComposerContext();
   const router = useRouter();
@@ -146,6 +164,28 @@ export const HTMLToolbarPlugin: FC<{
   };
   useEffect(() => loadContent(initialData.content));
 
+  /**
+   * subcategory一覧の取得
+   * todo: ただ叩きまくるのもアレなので、もっと上位で一回だけ取得しておいて、適宜参照するようにする
+   * Homeとかでstoreに保存しておくとか？ テスト前なので、とりあえずはここで取得する
+   */
+  useEffect(() => {
+    const fetchSubCategories = async () => {
+      const articles = await getArticles();
+      const subCategories = getSubCategories(articles) as Record<MainCategoryType, string[]>;
+      setSubCategories(subCategories);
+    };
+
+    if (Object.values(subCategories).some((e) => e.length)) {
+      return;
+    }
+    fetchSubCategories();
+  }, [subCategories]);
+
+  useEffect(() => {
+    setCurrentSubCategory(subCategories[currentMainCategory][0] || "new");
+  }, [currentMainCategory, subCategories]);
+
   return (
     <div className={styles.toolbar}>
       <div className="flex items-center justify-start mb-4">
@@ -155,10 +195,14 @@ export const HTMLToolbarPlugin: FC<{
           <div className="ml-0 pl-[8px] text-gray border-gray-300 border rounded-l-[6px] after:content-['▼'] after:text-gray-500 after:absolute after:-translate-x-4 after:scale-y-75 after:pointer-events-none">
             <select
               className="w-[165px]"
-              defaultValue={curArticle.mainCategory}
-              onChange={(e) => (curArticle.mainCategory = e.target.value as MainCategoryType)}
+              value={currentMainCategory}
+              onChange={(e) => {
+                const newMainCategory = e.target.value as MainCategoryType;
+                curArticle.mainCategory = newMainCategory;
+                setCurrentMainCategory(newMainCategory);
+              }}
             >
-              {...(Object.keys(categories_jp) as MainCategoryType[]).map((mainCategory, index) => {
+              {(Object.keys(categories_jp) as MainCategoryType[]).map((mainCategory, index) => {
                 return (
                   <option key={index} value={mainCategory}>
                     # {categories_jp[mainCategory]}
@@ -167,12 +211,45 @@ export const HTMLToolbarPlugin: FC<{
               })}
             </select>
           </div>
-          <div className="ml-[-1px] py-0 px-[8px] text-gray border-gray-300 border rounded-r-[6px]">
-            <input
-              placeholder="サブカテゴリを入力"
-              defaultValue={curArticle.subCategory}
-              onChange={(e) => (curArticle.subCategory = e.target.value)}
-            />
+          {/* subカテゴリの選択 */}
+          <div className="ml-[-1px] py-0 px-[8px] text-gray border-gray-300 border rounded-r-[6px] min-w-[125px]">
+            {currentSubCategory !== "new" ? (
+              <select
+                className="w-full"
+                value={currentSubCategory}
+                onChange={(e) => {
+                  curArticle.subCategory = e.target.value;
+                  setCurrentSubCategory(e.target.value);
+                }}
+              >
+                {subCategories[currentMainCategory]?.map((subCategory, index) => (
+                  <option key={index} value={subCategory}>
+                    {subCategory}
+                  </option>
+                ))}
+                <option value="new">新規作成</option>
+              </select>
+            ) : (
+              <div className="flex">
+                <input
+                  className="max-w-[115px]" // todo: 要修正
+                  type="text"
+                  placeholder="新しいサブカテゴリ"
+                  onChange={(e) => {
+                    curArticle.subCategory = e.target.value;
+                    setCurrentSubCategory(e.target.value);
+                  }}
+                />
+                {subCategories[currentMainCategory].length > 0 && (
+                  <button
+                    className="ml-2"
+                    onClick={() => setCurrentSubCategory(subCategories[currentMainCategory][0])} // キャンセルボタンを押したときに実行
+                  >
+                    × {/* todo: 後で修正 */}
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
