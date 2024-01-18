@@ -7,12 +7,26 @@ import Link from "next/link";
 
 const ArticleCard: FC<{ article: ArticleType }> = (props) => {
   const article: ArticleType = props.article;
+  const content: string = article.shown
+    ? "before:content-['●_表示']"
+    : "before:content-['●_非表示']";
+  const color: string = article.shown ? "before:text-green-500" : "before:text-slate-500";
   return (
-    <div className="w-[20vw] border rounded p-4 mb-4" key={article.title}>
-      <Link className="font-semibold text-lg mb-4" href={`/${article.title}/edit`}>
-        {article.title}
+    <div className="w-[20vw] border rounded mb-4" key={article.title}>
+      <Link className="text-lg mb-4 relative" href={`/${article.title}/edit`}>
+        <div className="p-4">
+          <div
+            className={[
+              "font-semibold before:absolute before:text-[10px] before:right-2 before:bottom-0",
+              content,
+              color,
+            ].join(" ")}
+          >
+            {article.title}
+          </div>
+          <div className="text-sm mt-2">最終更新 {article.date}</div>
+        </div>
       </Link>
-      <div className="text-sm mt-2">最終更新 {article.date}</div>
     </div>
   );
 };
