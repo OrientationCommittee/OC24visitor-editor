@@ -9,7 +9,7 @@ const header = () => {
         </Link>
         <Link
           className="ml-auto bg-blue-600 text-white text-sm px-7 py-3 w-28 font-semibold rounded text-center"
-          href="https://ut-orientation.net/24/visitor/"
+          href="https://ut-orientation.net/visitor/"
         >
           visitor
         </Link>
